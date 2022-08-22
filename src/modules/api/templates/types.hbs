@@ -1,0 +1,10 @@
+{{#if types}}
+{{{types}}}
+{{/if}}
+{{#if isParameters}}
+export interface IParameters {
+    {{typePathParameters}}
+    {{typeQueryParameters}}
+    {{typeBodyParameters}}
+}
+{{/if}}

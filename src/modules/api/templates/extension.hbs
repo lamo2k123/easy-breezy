@@ -1,0 +1,16 @@
+import { BaseQueryApi } from '@reduxjs/toolkit/dist/query/baseQueryTypes';
+
+import type { api as apiType } from './';
+
+export const prepareHeaders = (headers: Headers, api: Pick<BaseQueryApi, 'getState' | 'extra' | 'endpoint' | 'type' | 'forced'>) => {
+    return headers;
+};
+
+export const paramsSerializer = undefined;
+
+export const enhanceEndpoints = (api: typeof apiType) => {
+    api.enhanceEndpoints({
+        addTagTypes: [],
+        endpoints  : {}
+    });
+};
