@@ -402,7 +402,7 @@ class API {
                         name: importName
                     });
 
-                    const notRequiredParameters = !['path', 'query', 'body', 'form-data'].filter((item) => !!this.#context.collector[path][method][`${item}-parameters`]?.required.length).length;
+                    const notRequiredParameters = !['path', 'query', 'body', 'form-data'].filter((item) => !!this.#context.collector[path][method][`${item}-parameters`]?.required?.length).length;
 
                     endpointsInject.push(templateEndpoint({
                         nameFunction         : camelcase(join(path.replace(/\{[a-z_-]+\}/, ''), method).replace(config.data.api[this.#answers.name]['base-url'], '').replace(/(\/|\\)+/g, '-')),
