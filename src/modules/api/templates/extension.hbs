@@ -9,7 +9,7 @@ export const prepareHeaders = (headers: Headers, api: Pick<BaseQueryApi, 'getSta
 export const paramsSerializer = undefined;
 
 export const enhanceEndpoints = (api: typeof apiType) => {
-    api.enhanceEndpoints({
+    return api.enhanceEndpoints({
         addTagTypes: [],
         endpoints  : {}
     });
