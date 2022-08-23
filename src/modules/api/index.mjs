@@ -186,6 +186,8 @@ class API {
                     return accumulator;
                 }, []);
 
+            const reBaseUrl = new RegExp(`^${config.data.api[this.#answers.name]['base-url']}`, 'gm');
+
             const { endpoints } = await enquirer.prompt({
                 type      : 'autocomplete',
                 name      : 'endpoints',
@@ -200,7 +202,7 @@ class API {
                     return accumulator;
                 }, []),
                 choices: this.#context.endpoints.map((item) => ({
-                    name   : `${item.endpoint.replace(config.data.api[this.#answers.name]['base-url'], '')}||${item.method}`,
+                    name   : `${join('/', item.endpoint.replace(reBaseUrl, ''))}||${item.method}`,
                     message: item.name
                 }))
             });
@@ -210,7 +212,8 @@ class API {
             }
 
             endpoints.reduce((accumulator, item) => {
-                const [endpointName, endpointMethod] = item.split('||');
+                const [name, endpointMethod] = item.split('||');
+                const endpointName = join('/', name.replace(reBaseUrl, ''));
 
                 if(!accumulator[endpointName]) {
                     accumulator[endpointName] = [];
@@ -231,7 +234,7 @@ class API {
                 .keys(config.data.api[this.#answers.name].endpoints)
                 .reduce((accumulator, endpointName) => {
                     config.data.api[this.#answers.name].endpoints[endpointName].forEach((endpointMethod) => {
-                        const endpoint = this.#context.swagger.paths[config.data.api[this.#answers.name]['base-url'] + endpointName][endpointMethod];
+                        const endpoint = this.#context.swagger.paths[join(config.data.api[this.#answers.name]['base-url'], endpointName)][endpointMethod];
 
                         Object
                             .keys(endpoint.responses)
@@ -395,7 +398,7 @@ class API {
                     const fileInjectPath = join(config.data.api.dir, this.#answers.name, path, method, `index.ts`);
 
                     const importPath = relative(this.#pathRootDir, dirname(fileInjectPath)).replace(/(\/|\\)+/g, '/');
-                    const importName = camelcase(importPath.replace(/{[a-z_-]+\}/g, 'parameter').replace(/(\/|\\)+/g, '-'));
+                    const importName = camelcase(importPath.replace(/{([a-z_-]+)\}/g, '$1').replace(/(\/|\\)+/g, '-'));
 
                     imports.push({
                         path: importPath,
@@ -405,7 +408,7 @@ class API {
                     const notRequiredParameters = !['path', 'query', 'body', 'form-data'].filter((item) => !!this.#context.collector[path][method][`${item}-parameters`]?.required?.length).length;
 
                     endpointsInject.push(templateEndpoint({
-                        nameFunction         : camelcase(join(path.replace(/\{[a-z_-]+\}/, ''), method).replace(config.data.api[this.#answers.name]['base-url'], '').replace(/(\/|\\)+/g, '-')),
+                        nameFunction         : camelcase(join(path.replace(/\{([a-z_-]+)\}/g, '$1'), method).replace(reBaseUrl, '').replace(/(\/|\\)+/g, '-')),
                         builder              : ['PATCH', 'PUT', 'POST', 'DELETE'].includes(method.toUpperCase()) ? 'mutation' : 'query',
                         typeResponse         : !!this.#context.collector[path][method]['200'] ? `${importName}.${Code200Prefix}Code200` : this.#context.collector[path][method]['201'] ? `${importName}.${Code201Prefix}Code201` : 'void',
                         isParameters         : !!typeParameters,
