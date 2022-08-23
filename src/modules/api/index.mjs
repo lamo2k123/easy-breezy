@@ -200,7 +200,7 @@ class API {
                     return accumulator;
                 }, []),
                 choices: this.#context.endpoints.map((item) => ({
-                    name   : `${item.endpoint}||${item.method}`,
+                    name   : `${item.endpoint.replace(config.data.api[this.#answers.name]['base-url'], '')}||${item.method}`,
                     message: item.name
                 }))
             });
@@ -231,7 +231,7 @@ class API {
                 .keys(config.data.api[this.#answers.name].endpoints)
                 .reduce((accumulator, endpointName) => {
                     config.data.api[this.#answers.name].endpoints[endpointName].forEach((endpointMethod) => {
-                        const endpoint = this.#context.swagger.paths[endpointName][endpointMethod];
+                        const endpoint = this.#context.swagger.paths[config.data.api[this.#answers.name]['base-url'] + endpointName][endpointMethod];
 
                         Object
                             .keys(endpoint.responses)
