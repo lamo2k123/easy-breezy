@@ -234,7 +234,13 @@ class API {
                 .keys(config.data.api[this.#answers.name].endpoints)
                 .reduce((accumulator, endpointName) => {
                     config.data.api[this.#answers.name].endpoints[endpointName].forEach((endpointMethod) => {
-                        const endpoint = this.#context.swagger.paths[join(config.data.api[this.#answers.name]['base-url'], endpointName)][endpointMethod];
+                        let endpoint;
+
+                        try {
+                            endpoint = this.#context.swagger.paths[join(config.data.api[this.#answers.name]['base-url'], endpointName)][endpointMethod];
+                        } catch(error) {
+                            endpoint = this.#context.swagger.paths[endpointName][endpointMethod];
+                        }
 
                         Object
                             .keys(endpoint.responses)
