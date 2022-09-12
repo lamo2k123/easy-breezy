@@ -1,6 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
-import { prepareHeaders, paramsSerializer, enhanceEndpoints } from './extension';
+import { baseQuery, enhanceEndpoints } from './extension';
 
 {{#each imports}}
 import type * as {{this.name}} from './{{this.path}}';
@@ -8,12 +8,7 @@ import type * as {{this.name}} from './{{this.path}}';
 
 export const api = createApi({
     reducerPath: 'api/{{reducerPath}}',
-    baseQuery  : fetchBaseQuery({
-        baseUrl: '{{baseUrl}}',
-        headers: { 'cache-control': 'no-cache' },
-        prepareHeaders,
-        paramsSerializer
-    }),
+    baseQuery  : baseQuery('{{baseUrl}}'),
     endpoints  : (build) => ({
         {{#each endpoints}}{{{this}}},{{/each}}
     })
