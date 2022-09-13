@@ -202,7 +202,7 @@ class API {
                     return accumulator;
                 }, []),
                 choices: this.#context.endpoints.map((item) => ({
-                    name   : `${join('/', item.endpoint.replace(reBaseUrl, ''))}||${item.method}`,
+                    name   : `${join('/', item.endpoint.replace(reBaseUrl, '')).replace(/(\/|\\)+/g, '/')}||${item.method}`,
                     message: item.name
                 }))
             });
@@ -213,7 +213,7 @@ class API {
 
             endpoints.reduce((accumulator, item) => {
                 const [name, endpointMethod] = item.split('||');
-                const endpointName = join('/', name.replace(reBaseUrl, ''));
+                const endpointName = join('/', name.replace(reBaseUrl, '')).replace(/(\/|\\)+/g, '/');
 
                 if(!accumulator[endpointName]) {
                     accumulator[endpointName] = [];
@@ -237,7 +237,7 @@ class API {
                         let endpoint;
 
                         try {
-                            endpoint = this.#context.swagger.paths[join(config.data.api[this.#answers.name]['base-url'], endpointName)][endpointMethod];
+                            endpoint = this.#context.swagger.paths[join(config.data.api[this.#answers.name]['base-url'], endpointName).replace(/(\/|\\)+/g, '/')][endpointMethod];
                         } catch(error) {
                             endpoint = this.#context.swagger.paths[endpointName][endpointMethod];
                         }
