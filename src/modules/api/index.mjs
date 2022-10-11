@@ -55,7 +55,7 @@ class API {
 
             if(json.type === 'object') {
                 if(json.additionalProperties === undefined) {
-                    json.additionalProperties = false;
+                    json.additionalProperties = !Object.keys(json.properties).length;
                 }
 
                 json['x-marker'] = true;
