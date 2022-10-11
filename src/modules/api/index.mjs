@@ -1,10 +1,10 @@
 import { fileURLToPath } from 'url';
 import { dirname, join, relative } from 'path';
-import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { readFileSync } from 'fs';
 import { compile } from 'json-schema-to-typescript';
 import pascalcase from 'pascalcase';
 import camelcase from 'camelcase';
-
+import sortObject from 'deep-sort-object';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import enquirer from 'enquirer';
 import chalk from 'chalk';
@@ -372,7 +372,9 @@ class API {
 
                     for(const key in this.#context.collector[path][method]) {
                         const prefix = this.#context.collector[path][method][key].type === 'object' ? 'i' : 't';
-                        const schemaString = this.schemaStringify(this.#context.collector[path][method][key]);
+                        let schemaString = this.schemaStringify(this.#context.collector[path][method][key]);
+
+                        schemaString = JSON.stringify(sortObject(JSON.parse(schemaString)), null, 4);
 
                         types.push(
                             await compile(JSON.parse(schemaString), Number(key) ? `${prefix}-code-${key}` : `${prefix}-${key}`, {
