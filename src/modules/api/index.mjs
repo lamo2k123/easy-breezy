@@ -97,6 +97,18 @@ class API {
         }, 4);
     }
 
+    isOpenAPI3() {
+        return !!this.#context.swagger?.openapi?.startsWith('3');
+    }
+
+    isRequestBodyMultipartFormData(path, method) {
+        if(this.isOpenAPI3) {
+            return !!this.#context.swagger.paths[path][method].requestBody?.content?.['multipart/form-data'];
+        }
+
+        return false;
+    }
+
     async run() {
         if(!config.data.api?.dir) {
             await enquirer.prompt({
@@ -376,6 +388,7 @@ class API {
 
                         schemaString = JSON.stringify(sortObject(JSON.parse(schemaString)), null, 4);
 
+                        console.log(1, path, method, key, schemaString);
                         types.push(
                             await compile(JSON.parse(schemaString), Number(key) ? `${prefix}-code-${key}` : `${prefix}-${key}`, {
                                 bannerComment         : '',
@@ -428,7 +441,7 @@ class API {
 
                             return acc;
                         }, '') + '}',
-                        bodyPayload : this.#context.collector[path][method]['form-data-parameters'] ? `params.body` : !this.#context.collector[path][method]['body-parameters'] ? 'undefined' : this.#context.collector[path][method]['body-parameters'].type === 'object' ? !bodyKeys.length ? 'undefined' : '{' + bodyKeys.reduce((acc, key) => {
+                        bodyPayload : this.#context.collector[path][method]['form-data-parameters'] ? `params.body` : !this.#context.collector[path][method]['body-parameters'] ? this.isRequestBodyMultipartFormData(path, method) ? 'FormData' : 'undefined' : this.#context.collector[path][method]['body-parameters'].type === 'object' ? !bodyKeys.length ? 'undefined' : '{' + bodyKeys.reduce((acc, key) => {
                             acc += `${key}: params${notRequiredParameters ? '?' : ''}.body${this.#context.collector[path][method]['body-parameters']?.required?.length ? '' : '?'}.${key},`;
 
                             return acc;
