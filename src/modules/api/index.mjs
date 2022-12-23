@@ -359,8 +359,8 @@ class API {
                             }
                         }
 
-                        if(!this.#context.swagger.swagger?.startsWith('2') && endpoint?.requestBody?.content?.['application/json']?.schema) {
-                            const schema = endpoint.requestBody?.content?.['application/json']?.schema;
+                        if(this.isOpenAPI3() && (endpoint?.requestBody?.content?.['application/json']?.schema || endpoint?.requestBody?.content?.['multipart/form-data']?.schema)) {
+                            const schema = endpoint.requestBody?.content?.['application/json']?.schema || endpoint?.requestBody?.content?.['multipart/form-data']?.schema;
 
                             if(schema) {
                                 accumulator[endpointName][endpointMethod]['body-parameters'] = schema;
@@ -390,18 +390,24 @@ class API {
 
                         schemaString = JSON.stringify(sortObject(JSON.parse(schemaString)), null, 4);
 
-                        types.push(
-                            await compile(JSON.parse(schemaString), Number(key) ? `${prefix}-code-${key}` : `${prefix}-${key}`, {
-                                bannerComment         : '',
-                                unreachableDefinitions: true,
-                                strictIndexSignatures : true,
-                                style                 : {
-                                    printWidth : Infinity,
-                                    singleQuote: true,
-                                    tabWidth   : 4
-                                }
-                            })
-                        );
+                        if(this.isRequestBodyMultipartFormData(path, method) && key === 'body-parameters') {
+                            types.push(`
+export interface IBodyParameters extends FormData {}
+                            `);
+                        } else {
+                            types.push(
+                                await compile(JSON.parse(schemaString), Number(key) ? `${prefix}-code-${key}` : `${prefix}-${key}`, {
+                                    bannerComment         : '',
+                                    unreachableDefinitions: true,
+                                    strictIndexSignatures : true,
+                                    style                 : {
+                                        printWidth : Infinity,
+                                        singleQuote: true,
+                                        tabWidth   : 4
+                                    }
+                                })
+                            );
+                        }
 
                         const pathFile = join(config.data.api.dir, this.#answers.name, path, method, `${key}.json`);
 
@@ -442,7 +448,7 @@ class API {
 
                             return acc;
                         }, '') + '}',
-                        bodyPayload : this.#context.collector[path][method]['form-data-parameters'] ? `params.body` : !this.#context.collector[path][method]['body-parameters'] ? this.isRequestBodyMultipartFormData(path, method) ? 'FormData' : 'undefined' : this.#context.collector[path][method]['body-parameters'].type === 'object' ? !bodyKeys.length ? 'undefined' : '{' + bodyKeys.reduce((acc, key) => {
+                        bodyPayload : this.#context.collector[path][method]['form-data-parameters'] || this.isRequestBodyMultipartFormData(path, method) ? `params.body` : !this.#context.collector[path][method]['body-parameters'] ? 'undefined' : this.#context.collector[path][method]['body-parameters'].type === 'object' ? !bodyKeys.length ? 'undefined' : '{' + bodyKeys.reduce((acc, key) => {
                             acc += `${key}: params${notRequiredParameters ? '?' : ''}.body${this.#context.collector[path][method]['body-parameters']?.required?.length ? '' : '?'}.${key},`;
 
                             return acc;
