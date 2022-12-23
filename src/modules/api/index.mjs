@@ -392,7 +392,7 @@ class API {
 
                         if(this.isRequestBodyMultipartFormData(path, method) && key === 'body-parameters') {
                             types.push(`
-export interface IBodyParameters extends FormData {}
+export type TBodyParameters = FormData;
                             `);
                         } else {
                             types.push(
@@ -461,7 +461,7 @@ export interface IBodyParameters extends FormData {}
                         isParameters       : !!typeParameters,
                         typePathParameters : this.#context.collector[path][method]['path-parameters'] ? `path${this.#context.collector[path][method]['path-parameters'].required?.length ? '' : '?'}: ${this.#context.collector[path][method]['path-parameters'].type === 'object' ? 'I' : 'T'}PathParameters,` : '',
                         typeQueryParameters: this.#context.collector[path][method]['query-parameters'] ? `query${this.#context.collector[path][method]['query-parameters'].required?.length ? '' : '?'}: ${this.#context.collector[path][method]['query-parameters'].type === 'object' ? 'I' : 'T'}QueryParameters,` : '',
-                        typeBodyParameters : this.#context.collector[path][method]['body-parameters'] ? `body${this.#context.collector[path][method]['body-parameters'].required?.length ? '' : '?'}: ${this.#context.collector[path][method]['body-parameters'].type === 'object' ? 'I' : 'T'}BodyParameters,` : ''
+                        typeBodyParameters : this.#context.collector[path][method]['body-parameters'] ? `body${this.#context.collector[path][method]['body-parameters'].required?.length ? '' : '?'}: ${this.#context.collector[path][method]['body-parameters'].type === 'object' && !this.isRequestBodyMultipartFormData(path, method) ? 'I' : 'T'}BodyParameters,` : ''
                     });
 
                     fileSystem.createOrUpdate(fileInjectPath, fileTypes, {
