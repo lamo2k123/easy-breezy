@@ -103,7 +103,9 @@ class API {
 
     isRequestBodyMultipartFormData(path, method) {
         if(this.isOpenAPI3) {
-            return !!this.#context.swagger.paths[path][method].requestBody?.content?.['multipart/form-data'];
+            const fullPath = join(config.data.api[this.#answers.name]['base-url'], path).replace(/(\/|\\)+/g, '/');
+
+            return !!this.#context.swagger.paths[fullPath][method].requestBody?.content?.['multipart/form-data'];
         }
 
         return false;
@@ -388,7 +390,6 @@ class API {
 
                         schemaString = JSON.stringify(sortObject(JSON.parse(schemaString)), null, 4);
 
-                        console.log(1, path, method, key, schemaString);
                         types.push(
                             await compile(JSON.parse(schemaString), Number(key) ? `${prefix}-code-${key}` : `${prefix}-${key}`, {
                                 bannerComment         : '',
