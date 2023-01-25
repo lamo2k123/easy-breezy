@@ -202,23 +202,26 @@ class API {
 
             const reBaseUrl = new RegExp(`^${config.data.api[this.#answers.name]['base-url']}`, 'gm');
 
+            const choices = this.#context.endpoints.map((item) => ({
+                name   : `${join('/', item.endpoint.replace(reBaseUrl, '')).replace(/(\/|\\)+/g, '/')}||${item.method}`,
+                message: item.name
+            }));
+            const initial = Object.keys(config.data.api?.[this.#answers.name]?.endpoints || {}).reduce((accumulator, endpointName) => {
+                config.data.api[this.#answers.name].endpoints[endpointName].forEach((endpointMethod) => {
+                    accumulator.push(`${endpointName}||${endpointMethod}`)
+                });
+
+                return accumulator;
+            }, []);
+
             const { endpoints } = await enquirer.prompt({
                 type      : 'autocomplete',
                 name      : 'endpoints',
                 message   : 'Выберите необходимые энпоинты (поиск по строке):',
                 multiple  : true,
                 limit     : 10,
-                initial   : Object.keys(config.data.api?.[this.#answers.name]?.endpoints || {}).reduce((accumulator, endpointName) => {
-                    config.data.api[this.#answers.name].endpoints[endpointName].forEach((endpointMethod) => {
-                        accumulator.push(`${endpointName}||${endpointMethod}`)
-                    });
-
-                    return accumulator;
-                }, []),
-                choices: this.#context.endpoints.map((item) => ({
-                    name   : `${join('/', item.endpoint.replace(reBaseUrl, '')).replace(/(\/|\\)+/g, '/')}||${item.method}`,
-                    message: item.name
-                }))
+                initial   : initial.filter((value) => choices.find((choice) => choice.name === value)),
+                choices
             });
 
             if(!config.data.api[this.#answers.name]?.endpoints) {
@@ -253,7 +256,11 @@ class API {
                         try {
                             endpoint = this.#context.swagger.paths[join(config.data.api[this.#answers.name]['base-url'], endpointName).replace(/(\/|\\)+/g, '/')][endpointMethod];
                         } catch(error) {
-                            endpoint = this.#context.swagger.paths[endpointName][endpointMethod];
+                            try {
+                                endpoint = this.#context.swagger.paths[endpointName][endpointMethod];
+                            } catch(e) {
+                                return;
+                            }
                         }
 
                         Object
