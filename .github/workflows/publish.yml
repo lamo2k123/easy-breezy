@@ -12,13 +12,12 @@ jobs:
                 with:
                     node-version: 18
                     registry-url: 'https://registry.npmjs.org'
-            -   run:
-                    - npm ci
-                    - npm version ${{ github.event.workflow_run.head_branch }} --workspaces
-                    - npm publish --access public --workspaces
-                    - git config --global user.email bot@easy-breezy.com
-                    - git config --global user.name bot
-                    - git push
-                    - git push --tags
+            -   run: npm ci
+            -   run: npm version ${{ github.event.workflow_run.head_branch }} --workspaces
+            -   run: npm publish --access public --workspaces
+            -   run: git config --global user.email bot@easy-breezy.com
+            -   run: git config --global user.name bot
+            -   run: git push
+            -   run: git push --tags
                 env:
                     NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
