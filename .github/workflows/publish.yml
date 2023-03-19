@@ -22,12 +22,26 @@ jobs:
             -   run: npm publish --access public --workspaces
                 env:
                     NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
-            -   run: git config --global user.email bot@easy-breezy.com
-            -   run: git config --global user.name bot
-            -   run: git checkout -b ${{ github.event.release.target_commitish }}
-            -   run: git pull origin ${{ github.event.release.target_commitish }}
-            -   run: git status
-            -   run: git add .
-            -   run: git commit -m "Bump version ${{ github.event.release.tag_name }}"
-            -   run: git push origin ${{ github.event.release.target_commitish }}
-            -   run: git push origin ${{ github.event.release.target_commitish }} --tags
+
+            -   name: Create bump version PR
+                uses: peter-evans/create-pull-request@v4
+                with:
+                    commit-message: Bump version ${{ github.event.release.tag_name }}
+                    committer: GitHub <noreply@github.com>
+                    author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+                    branch: release-${{ github.event.release.tag_name }}
+                    base: master
+                    delete-branch: true
+                    title: '[Release] ${{ github.event.release.tag_name }}'
+                    assignees: lamo2k123
+                    reviewers: lamo2k123
+                    draft: false
+#            -   run: git config --global user.email bot@easy-breezy.com
+#            -   run: git config --global user.name bot
+#            -   run: git checkout -b ${{ github.event.release.target_commitish }}
+#            -   run: git pull origin ${{ github.event.release.target_commitish }}
+#            -   run: git status
+#            -   run: git add .
+#            -   run: git commit -m "Bump version ${{ github.event.release.tag_name }}"
+#            -   run: git push origin ${{ github.event.release.target_commitish }}
+#            -   run: git push origin ${{ github.event.release.target_commitish }} --tags
