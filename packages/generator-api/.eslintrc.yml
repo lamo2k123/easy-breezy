@@ -1,0 +1,65 @@
+root: true
+extends:
+    - eslint:recommended
+    - plugin:@typescript-eslint/recommended
+parser: '@typescript-eslint/parser'
+plugins:
+    - '@typescript-eslint'
+rules:
+    '@typescript-eslint/array-type':
+        - error
+        - generic
+    quotes:
+        - error
+        - single
+    arrow-parens:
+        - error
+        - always
+    spaced-comment:
+        - error
+        - always
+    lines-around-comment:
+        - error
+        - beforeBlockComment: true
+    indent:
+        - error
+        - 4
+    line-comment-position:
+        - error
+        - position: above
+    max-statements-per-line:
+        - error
+        - max: 1
+    no-multi-spaces:
+        - error
+    no-multiple-empty-lines:
+        - error
+        - max: 1
+    padding-line-between-statements:
+        - error
+        - blankLine: always
+          prev: import
+          next: '*'
+        - blankLine: never
+          prev: import
+          next: import
+        - blankLine: always
+          prev: '*'
+          next: export
+        - blankLine: always
+          prev: export
+          next: '*'
+    computed-property-spacing:
+        - error
+        - never
+    object-curly-spacing:
+        - error
+        - always
+    object-curly-newline:
+        - error
+        - ImportDeclaration: never
+          ExportDeclaration: never
+          ObjectPattern: always
+          ObjectExpression: always
+    object-property-newline:
+        - error

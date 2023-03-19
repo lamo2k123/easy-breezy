@@ -1,0 +1,22 @@
+{
+    "message": "API - API Adapter",
+    "question": {
+        "dir": "Specify the adapter directory:",
+        "host": "Point to an OpenAPI schema (Пример: https://example.com/openapi.json):",
+        "name": "Specify the name of the API:",
+        "base-url": "Specify baseUrl API:",
+        "endpoints": "Select required endpoints (search by string):"
+    },
+    "validation": {
+        "required": "This field is required"
+    },
+    "output": {
+        "loading-host": "Please wait loading API schema ({{- host}})..."
+    },
+    "comments": {
+        "hands-off": "This file was created automatically.\n    DO NOT MANUALLY CHANGE IT!\n    Instead of manually changing, use `easy-breezy`",
+        "api-context": "If you have a need to use the storage context for createApi.\n    You can do it here using the example below.\n\n    https://redux-toolkit.js.org/rtk-query/usage/customizing-create-api\n\n    Example:\n    \n    import { createDispatchHook, createSelectorHook, createStoreHook } from 'react-redux';\n\n    export const createApi = buildCreateApi(\n        coreModule(),\n        reactHooksModule({\n            useDispatch: createDispatchHook(context),\n            useSelector: createSelectorHook(context),\n            useStore   : createStoreHook(context)\n        })\n    );",
+        "api-base-query": "A detailed description of valid parameters and examples of `fetchBaseQuery` can be found here.\n\n    https://redux-toolkit.js.org/rtk-query/api/fetchBaseQuery#parameters",
+        "api-enhance-endpoints": "A detailed description of the interaction with `enhanceEndpoints` can be found here.\n\n    https://redux-toolkit.js.org/rtk-query/api/created-api/code-splitting#enhanceendpoints"
+    }
+}

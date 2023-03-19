@@ -1,0 +1,32 @@
+{
+    "name": "@easy-breezy/generator-api",
+    "version": "2.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "type": "module",
+    "scripts": {
+        "start": "npm run build -- -w",
+        "build": "tsc -P tsconfig.json"
+    },
+    "author": {
+        "name": "Aleksey Novikov",
+        "email": "lamo2k123@gmail.com",
+        "url": "https://github.com/lamo2k123"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "@apidevtools/swagger-parser": "10.1.0",
+        "@typescript-eslint/eslint-plugin": "5.55.0",
+        "@typescript-eslint/parser": "5.55.0",
+        "camelcase": "7.0.1",
+        "enquirer": "2.3.6",
+        "eslint": "8.36.0",
+        "json-schema-to-typescript": "12.0.0",
+        "lodash.get": "4.4.2",
+        "lodash.setwith": "4.3.2",
+        "ts-clone-node": "2.0.4"
+    },
+    "devDependencies": {
+        "openapi-types": "12.1.0"
+    }
+}
