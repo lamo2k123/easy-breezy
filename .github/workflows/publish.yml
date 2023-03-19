@@ -24,6 +24,8 @@ jobs:
                     NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
             -   run: git config --global user.email bot@easy-breezy.com
             -   run: git config --global user.name bot
+            -   run: git checkout -b ${{ github.event.release.target_commitish }}
+            -   run: git pull origin ${{ github.event.release.target_commitish }}
             -   run: git status
             -   run: git add .
             -   run: git commit -m "Bump version ${{ github.event.release.tag_name }}"
