@@ -25,5 +25,7 @@ jobs:
             -   run: git config --global user.email bot@easy-breezy.com
             -   run: git config --global user.name bot
             -   run: git status
+            -   run: git add .
+            -   run: git commit -m "Bump version ${{ github.event.release.tag_name }}"
             -   run: git push origin ${{ github.event.release.target_commitish }}
             -   run: git push origin ${{ github.event.release.target_commitish }} --tags
