@@ -16,9 +16,9 @@ jobs:
             -   run: npm version ${{ github.event.release.tag_name }} --workspaces
             -   run: npm run build --workspaces
             -   run: npm publish --access public --workspaces
+                env:
+                    NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
             -   run: git config --global user.email bot@easy-breezy.com
             -   run: git config --global user.name bot
             -   run: git push
             -   run: git push --tags
-                env:
-                    NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
