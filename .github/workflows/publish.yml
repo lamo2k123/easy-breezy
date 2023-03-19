@@ -13,6 +13,7 @@ jobs:
                     node-version: 18
                     registry-url: 'https://registry.npmjs.org'
             -   run: npm ci
+            -   run: npm run build --workspaces
             -   run: npm version ${{ github.event.release.tag_name }} --workspaces
             -   run: npm publish --access public --workspaces
             -   run: git config --global user.email bot@easy-breezy.com
