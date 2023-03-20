@@ -1,5 +1,12 @@
 import { Command } from 'commander';
 
+// @ts-ignore
+const { default: { version } } = await import('./../../../package.json', {
+    assert: {
+        type: "json",
+    },
+});
+
 interface IArgs {
     lang?: string,
     config: string,
@@ -14,6 +21,7 @@ export class Args {
         this.program
             .name('easy-breezy')
             .description('CLI to generation code')
+            .version(version)
             .option('-l, --lang <lang>', 'Language')
             .option('-c, --config <path>', 'Configuration file', './.easy-breezy/config.json')
             .option('-g, --generator <name>', 'Selecting a generator to run')
