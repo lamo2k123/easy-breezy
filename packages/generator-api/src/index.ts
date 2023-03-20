@@ -445,11 +445,12 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
 
                             endpointsAST.push(
                                 createEndpoint({
-                                    name      : this.camelcase(this.path(path, method)),
-                                    url       : path,
-                                    importName: this.camelcase(pathRelative),
-                                    method    : method as OpenAPIV3.HttpMethods,
-                                    schemas   : {
+                                    name       : this.camelcase(this.path(path, method)),
+                                    hasFormData: this.swagger.hasFormDataMethod(this.path(this.answers.baseUrl, path), method as OpenAPIV3.HttpMethods),
+                                    url        : path,
+                                    importName : this.camelcase(pathRelative),
+                                    method     : method as OpenAPIV3.HttpMethods,
+                                    schemas    : {
                                         path    : collector[path][method].path,
                                         body    : collector[path][method].body,
                                         query   : collector[path][method].query,

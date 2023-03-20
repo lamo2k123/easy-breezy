@@ -14,6 +14,7 @@ interface IOptions {
     name: string,
     url: string,
     importName: string,
+    hasFormData?: boolean,
     method: OpenAPIV3.HttpMethods,
     schemas: {
         [key in 'response' | 'path' | 'body' | 'query' | 'header' | 'cookie']?: OpenAPIV3.SchemaObject
@@ -121,39 +122,51 @@ export const createEndpoint = (options: IOptions) => {
             const keys = Object.keys(options.schemas[schemaKey]?.properties || {});
 
             if(keys.length) {
-                returnObject.push(
-                    ts.factory.createPropertyAssignment(
-                        ts.factory.createIdentifier(MAP[schemaKey]),
-                        ts.factory.createObjectLiteralExpression(
-                            keys.map((key) => {
-                                let access = ts.factory.createPropertyAccessExpression(
-                                    ts.factory.createPropertyAccessExpression(
-                                        ts.factory.createIdentifier('params'),
-                                        ts.factory.createIdentifier(schemaKey)
-                                    ),
-                                    ts.factory.createIdentifier(key)
-                                );
-
-                                if(!options.schemas.query?.required?.includes(key)) {
-                                    access = ts.factory.createPropertyAccessChain(
+                if(schemaKey === 'body' && options.hasFormData) {
+                    returnObject.push(
+                        ts.factory.createPropertyAssignment(
+                            ts.factory.createIdentifier(MAP[schemaKey]),
+                            ts.factory.createPropertyAccessExpression(
+                                ts.factory.createIdentifier('params'),
+                                ts.factory.createIdentifier(schemaKey)
+                            )
+                        )
+                    );
+                } else {
+                    returnObject.push(
+                        ts.factory.createPropertyAssignment(
+                            ts.factory.createIdentifier(MAP[schemaKey]),
+                            ts.factory.createObjectLiteralExpression(
+                                keys.map((key) => {
+                                    let access = ts.factory.createPropertyAccessExpression(
                                         ts.factory.createPropertyAccessExpression(
                                             ts.factory.createIdentifier('params'),
                                             ts.factory.createIdentifier(schemaKey)
                                         ),
-                                        ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
                                         ts.factory.createIdentifier(key)
                                     );
-                                }
 
-                                return ts.factory.createPropertyAssignment(
-                                    ts.factory.createIdentifier(key),
-                                    access
-                                )
-                            }),
-                            true
+                                    if(!options.schemas.query?.required?.includes(key)) {
+                                        access = ts.factory.createPropertyAccessChain(
+                                            ts.factory.createPropertyAccessExpression(
+                                                ts.factory.createIdentifier('params'),
+                                                ts.factory.createIdentifier(schemaKey)
+                                            ),
+                                            ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
+                                            ts.factory.createIdentifier(key)
+                                        );
+                                    }
+
+                                    return ts.factory.createPropertyAssignment(
+                                        ts.factory.createIdentifier(key),
+                                        access
+                                    )
+                                }),
+                                true
+                            )
                         )
-                    )
-                );
+                    );
+                }
             }
         }
     }
