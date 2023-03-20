@@ -1,8 +1,12 @@
 {
     "name": "@easy-breezy/plugin-eslint",
-    "version": "2.0.8",
+    "version": "2.0.10",
     "description": "Used to format files according to the rules ESLint",
-    "keywords": ["easy-breezy", "plugin", "eslint"],
+    "keywords": [
+        "easy-breezy",
+        "plugin",
+        "eslint"
+    ],
     "homepage": "https://github.com/lamo2k123/easy-breezy",
     "bugs": {
         "url": "https://github.com/lamo2k123/easy-breezy/issues"

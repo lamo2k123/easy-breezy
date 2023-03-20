@@ -1,11 +1,15 @@
 {
     "name": "@easy-breezy/core",
-    "version": "2.0.8",
+    "version": "2.0.10",
     "main": "dist/index.js",
     "type": "module",
     "types": "dist/types/index.d.ts",
     "description": "Command line root module",
-    "keywords": ["easy-breezy", "core", "codegen"],
+    "keywords": [
+        "easy-breezy",
+        "core",
+        "codegen"
+    ],
     "homepage": "https://github.com/lamo2k123/easy-breezy",
     "bugs": {
         "url": "https://github.com/lamo2k123/easy-breezy/issues"
