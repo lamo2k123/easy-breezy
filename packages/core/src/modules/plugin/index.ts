@@ -44,7 +44,7 @@ class Plugin {
                                 get: config.bindGet(`plugins.${key}`),
                                 set: config.bindSet(`plugins.${key}`)
                             },
-                            output,
+                            output: output.bind(`plugins.${key}`),
                             colors,
                             fs,
                             args
