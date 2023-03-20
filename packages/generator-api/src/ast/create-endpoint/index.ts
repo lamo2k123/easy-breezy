@@ -63,9 +63,9 @@ export const createEndpoint = (options: IOptions) => {
         );
     }
 
-    if(options.schemas.path) {
-        const urls = options.url.split(/(\{[a-z_-]+\})/gi);
+    const urls = options.url.split(/(\{[a-z_-]+\})/gi);
 
+    if(options.schemas.path && urls.length > 1) {
         url = ts.factory.createTemplateExpression(
             ts.factory.createTemplateHead(
                 urls[0],
