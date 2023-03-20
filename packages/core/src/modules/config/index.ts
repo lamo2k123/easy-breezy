@@ -12,8 +12,16 @@ import i18n from './../i18n/index.js';
 import fs from './../fs/index.js';
 import { deepSortObject } from './../../helpers/deep-sort-object/index.js';
 
+// @ts-ignore
+const { default: { version } } = await import('./../../../package.json', {
+    assert: {
+        type: "json",
+    },
+});
+
 interface IData {
-    language?: string
+    language?: string,
+    version?: string
 }
 
 class Config {
@@ -122,6 +130,10 @@ class Config {
     public run = async () => {
         if(!fs.exists(Config.path)) {
             await this.create();
+        }
+
+        if(version !== this.data.version) {
+            this.data.version = version;
         }
 
         const path = join(process.cwd(), 'node_modules/@easy-breezy');

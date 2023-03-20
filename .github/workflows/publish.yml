@@ -7,10 +7,6 @@ jobs:
     publish:
         runs-on: ubuntu-latest
         steps:
-            -   name: Dump GitHub context
-                env:
-                    GITHUB_CONTEXT: ${{ toJson(github) }}
-                run: echo "$GITHUB_CONTEXT"
             -   uses: actions/checkout@v3
             -   uses: actions/setup-node@v3
                 with:
@@ -36,12 +32,3 @@ jobs:
                     assignees: lamo2k123
                     reviewers: lamo2k123
                     draft: false
-#            -   run: git config --global user.email bot@easy-breezy.com
-#            -   run: git config --global user.name bot
-#            -   run: git checkout -b ${{ github.event.release.target_commitish }}
-#            -   run: git pull origin ${{ github.event.release.target_commitish }}
-#            -   run: git status
-#            -   run: git add .
-#            -   run: git commit -m "Bump version ${{ github.event.release.tag_name }}"
-#            -   run: git push origin ${{ github.event.release.target_commitish }}
-#            -   run: git push origin ${{ github.event.release.target_commitish }} --tags

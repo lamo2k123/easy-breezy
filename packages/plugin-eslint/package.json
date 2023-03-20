@@ -1,7 +1,16 @@
 {
     "name": "@easy-breezy/plugin-eslint",
     "version": "2.0.8",
-    "description": "",
+    "description": "Used to format files according to the rules ESLint",
+    "keywords": ["easy-breezy", "plugin", "eslint"],
+    "homepage": "https://github.com/lamo2k123/easy-breezy",
+    "bugs": {
+        "url": "https://github.com/lamo2k123/easy-breezy/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lamo2k123/easy-breezy"
+    },
     "main": "dist/index.js",
     "type": "module",
     "types": "dist/types/index.d.ts",
@@ -17,5 +26,9 @@
     "license": "MIT",
     "dependencies": {
         "eslint": "8.36.0"
+    },
+    "engines": {
+        "node": ">=18",
+        "npm": ">=8"
     }
 }

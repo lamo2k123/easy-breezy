@@ -1,10 +1,19 @@
 {
     "name": "@easy-breezy/core",
     "version": "2.0.8",
-    "description": "",
     "main": "dist/index.js",
     "type": "module",
     "types": "dist/types/index.d.ts",
+    "description": "Command line root module",
+    "keywords": ["easy-breezy", "core", "codegen"],
+    "homepage": "https://github.com/lamo2k123/easy-breezy",
+    "bugs": {
+        "url": "https://github.com/lamo2k123/easy-breezy/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lamo2k123/easy-breezy"
+    },
     "imports": {
         "#module/*": "./dist/modules/*/index.js",
         "#helper/*": "./dist/helpers/*/index.js"
@@ -40,5 +49,9 @@
     "bin": {
         "easy-breezy": "dist/index.js",
         "easybreezy": "dist/index.js"
+    },
+    "engines": {
+        "node": ">=18",
+        "npm": ">=8"
     }
 }
