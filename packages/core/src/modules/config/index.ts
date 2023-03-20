@@ -43,7 +43,7 @@ class Config {
             try {
                 const data = JSON.parse(config);
 
-                this.snapshot = JSON.stringify(data);
+                this.snapshot = JSON.stringify(deepSortObject(data));
                 this.data = Object.assign(data, this.data);
             } catch(error) {
                 if(!silentMode) {
@@ -67,7 +67,7 @@ class Config {
             process.exit(0);
         }
 
-        fs.createFile(Config.path, JSON.stringify(deepSortObject(this.data), null, 4));
+        fs.createFile(Config.path, JSON.stringify(this.data, null, 4));
 
         this.load();
     }
@@ -122,7 +122,7 @@ class Config {
             }]);
 
             if(save) {
-                fs.updateFile(Config.path, JSON.stringify(deepSortObject(this.data), null, 4))
+                fs.updateFile(Config.path, JSON.stringify(this.data, null, 4))
             }
         }
     }

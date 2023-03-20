@@ -1,0 +1,5 @@
+{
+    "add": "Add {{count}} files to GIT index?",
+    "added": "✅ {{count}} files added to GIT index",
+    "git-not-found": "There is no GIT in this directory!"
+}

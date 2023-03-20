@@ -1,0 +1,39 @@
+{
+    "name": "@easy-breezy/plugin-git",
+    "version": "2.0.14",
+    "description": "Plugin adds generated files to git",
+    "keywords": [
+        "easy-breezy",
+        "plugin",
+        "git"
+    ],
+    "homepage": "https://github.com/lamo2k123/easy-breezy",
+    "bugs": {
+        "url": "https://github.com/lamo2k123/easy-breezy/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lamo2k123/easy-breezy"
+    },
+    "main": "dist/index.js",
+    "type": "module",
+    "types": "dist/types/index.d.ts",
+    "scripts": {
+        "start": "npm run build -- -w",
+        "build": "tsc -P tsconfig.json"
+    },
+    "author": {
+        "name": "Aleksey Novikov",
+        "email": "lamo2k123@gmail.com",
+        "url": "https://github.com/lamo2k123"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "enquirer": "2.3.6",
+        "simple-git": "3.17.0"
+    },
+    "engines": {
+        "node": ">=18",
+        "npm": ">=8"
+    }
+}

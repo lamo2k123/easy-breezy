@@ -372,7 +372,7 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
 
                     this.normalizeJSON(collector);
 
-                    const pathAPI = this.path(process.cwd(), this.answers.dir, this.answers.name);
+                    const pathAPI = this.path(this.answers.dir, this.answers.name);
 
                     const imports = [];
                     const endpointsAST = [];
