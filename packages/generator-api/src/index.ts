@@ -30,7 +30,8 @@ const __dirname = dirname(__filename);
 
 const eslint = new ESLint({
     overrideConfigFile: join(__dirname, '../.eslintrc.yml'),
-    fix: true
+    fix: true,
+    useEslintrc: false
 });
 
 export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
