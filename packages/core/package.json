@@ -46,7 +46,7 @@
         "ansi-styles": "6.2.1",
         "commander": "10.0.0",
         "enquirer": "2.3.6",
-        "i18next": "22.4.12",
+        "i18next": "22.4.13",
         "lodash.get": "4.4.2",
         "lodash.setwith": "4.3.2"
     },

@@ -12,10 +12,9 @@
     "packages/plugin-git"
   ],
   "devDependencies": {
-    "@types/eslint": "8.21.2",
     "@types/lodash.get": "4.4.7",
     "@types/lodash.setwith": "4.3.7",
-    "@types/node": "18.15.3",
+    "@types/node": "18.15.5",
     "typescript": "5.0.2"
   }
 }
