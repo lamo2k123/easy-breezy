@@ -1,6 +1,6 @@
 {
     "name": "@easy-breezy/plugin-git",
-    "version": "2.0.19",
+    "version": "2.0.20",
     "description": "Plugin adds generated files to git",
     "keywords": [
         "easy-breezy",
