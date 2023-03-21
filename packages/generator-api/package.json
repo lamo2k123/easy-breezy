@@ -1,6 +1,6 @@
 {
     "name": "@easy-breezy/generator-api",
-    "version": "2.0.17",
+    "version": "2.0.18",
     "main": "dist/index.js",
     "type": "module",
     "description": "RTK adapter generator from OpenAPI specification",
