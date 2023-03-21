@@ -35,7 +35,7 @@ export const createEndpoint = (options: IOptions) => {
     let returnObject: Array<PropertyAssignment> = [
         ts.factory.createPropertyAssignment(
             ts.factory.createIdentifier('method'),
-            ts.factory.createStringLiteral(options.method)
+            ts.factory.createStringLiteral(options.method.toUpperCase())
         )
     ];
 
