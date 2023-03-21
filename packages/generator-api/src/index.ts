@@ -1,7 +1,6 @@
 import { dirname, join, relative } from 'path';
 import { fileURLToPath } from 'url';
 
-import { ESLint } from 'eslint';
 import { cloneNode } from 'ts-clone-node';
 import ts from 'typescript';
 import _get from 'lodash.get';
@@ -27,12 +26,6 @@ type TMethod = TMethodV2 | 'trace';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-const eslint = new ESLint({
-    overrideConfigFile: join(__dirname, '../.eslintrc.yml'),
-    fix: true,
-    useEslintrc: false
-});
 
 export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
     i18n.addResource('ru', ru);
@@ -124,7 +117,7 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
 
                 private schemaSave = (path: string, payload: object) => {
                     if(payload) {
-                        fs.updateFile(path, this.schemaStringify(deepSortObject(payload)));
+                        fs.updateFile(path, this.schemaStringify(deepSortObject(payload)), true);
                     }
                 }
 
@@ -418,29 +411,26 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
 
                             imports.push(pathRelative);
 
-                            const typeFile = createTypes({
-                                i18n,
-                                types,
-                                hasFormData: this.swagger.hasFormDataMethod(this.path(this.answers.baseUrl, path), method as OpenAPIV3.HttpMethods),
-                                schemas   : {
-                                    path     : collector[path][method].path,
-                                    body     : collector[path][method].body,
-                                    query    : collector[path][method].query,
-                                    responses: Object.keys(collector[path][method].responses).reduce((accumulator, key) => {
-                                        if(key.startsWith('2')) {
-                                            accumulator[key] = collector[path][method].responses[key];
-                                        }
-
-                                        return accumulator;
-                                    }, {} as Record<PropertyKey, OpenAPIV3.SchemaObject>)
-                                }
-                            }).print;
-
-                            const typeFileLint = await eslint.lintText(typeFile);
-
                             fs.updateFile(
                                 pathEndpoint,
-                                typeFileLint[0].output || typeFile
+                                createTypes({
+                                    i18n,
+                                    types,
+                                    hasFormData: this.swagger.hasFormDataMethod(this.path(this.answers.baseUrl, path), method as OpenAPIV3.HttpMethods),
+                                    schemas   : {
+                                        path     : collector[path][method].path,
+                                        body     : collector[path][method].body,
+                                        query    : collector[path][method].query,
+                                        responses: Object.keys(collector[path][method].responses).reduce((accumulator, key) => {
+                                            if(key.startsWith('2')) {
+                                                accumulator[key] = collector[path][method].responses[key];
+                                            }
+
+                                            return accumulator;
+                                        }, {} as Record<PropertyKey, OpenAPIV3.SchemaObject>)
+                                    }
+                                }).print,
+                                true
                             );
 
                             endpointsAST.push(
@@ -485,28 +475,21 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
                         sourceFile.forEachChild(find);
                     }
 
-                    const indexFile = createIndex({
-                        i18n,
-                        name   : this.answers.name,
-                        baseUrl: this.answers.baseUrl,
-                        endpointsAST,
-                        imports
-                    }).print;
-
-                    const indexFileLint = await eslint.lintText(indexFile);
-
                     fs.updateFile(
                         this.path(pathAPI, 'index.ts'),
-                        indexFileLint[0].output || indexFile
+                        createIndex({
+                            i18n,
+                            name   : this.answers.name,
+                            baseUrl: this.answers.baseUrl,
+                            endpointsAST,
+                            imports
+                        }).print,
+                        true
                     );
-
-                    const extensionFile = createExtension({ i18n }).print;
-
-                    const extensionFileLint = await eslint.lintText(extensionFile);
 
                     fs.createFile(
                         this.path(pathAPI, 'extension.ts'),
-                        extensionFileLint[0].output || extensionFile
+                        createExtension({ i18n }).print
                     );
                 }
             }

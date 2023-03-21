@@ -1,5 +1,6 @@
 import { dirname } from 'path';
 import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'fs';
+import { createHash } from 'crypto';
 
 import output from './../output/index.js';
 import i18n from './../i18n/index.js';
@@ -13,6 +14,20 @@ export class FS {
         changed: [],
         removed: []
     };
+
+    private createSignature = (data: string) => {
+        if(data) {
+            const hash = createHash('sha256').update(data, 'utf8');
+
+            return hash.digest('hex');
+        }
+    }
+
+    private getSignature = (data: string) => {
+        const result = /\/\/ Signature: ([a-z\d]+)$/gm.exec(data);
+
+        return result?.[1];
+    }
 
     public getOperations = () => {
         return this.operations;
@@ -32,15 +47,27 @@ export class FS {
         }
     }
 
-    public createFile = (path: string, data: string) => {
+    private write = (path: string, data: string, sign = false) => {
+        let payload = data;
+
+        if(sign && !path.endsWith('.json')) {
+            const signature = this.createSignature(data);
+
+            payload = `// Signature: ${signature}\n${payload}`;
+        }
+
+        writeFileSync(path, payload, {
+            encoding: 'utf8'
+        });
+    };
+
+    public createFile = (path: string, data: string, sign?: boolean) => {
         const existsFile = this.exists(path);
 
         if(!existsFile) {
             this.createDir(path);
 
-            writeFileSync(path, data, {
-                encoding: 'utf8'
-            });
+            this.write(path, data, sign);
 
             this.operations.created.push(path);
 
@@ -50,14 +77,20 @@ export class FS {
         return existsFile;
     }
 
-    public updateFile = (path: string, data: string) => {
-        if(this.createFile(path, data)) {
+    public updateFile = (path: string, data: string, sign?: boolean) => {
+        if(this.createFile(path, data, sign)) {
             const file = this.readFile(path);
 
             if(file !== data) {
-                writeFileSync(path, data, {
-                    encoding: 'utf8'
-                });
+                if(sign) {
+                    const signature = this.createSignature(data);
+
+                    if(this.getSignature(file) === signature) {
+                        return;
+                    }
+                }
+
+                this.write(path, data, sign);
 
                 this.operations.changed.push(path);
 
