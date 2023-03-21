@@ -6,7 +6,8 @@ import ts, {
     TemplateExpression,
     TemplateMiddle,
     TemplateTail,
-    TypeReferenceNode
+    TypeReferenceNode,
+    UnionTypeNode
 } from 'typescript';
 import { OpenAPIV3 } from 'openapi-types';
 
@@ -29,7 +30,7 @@ const MAP = {
 
 export const createEndpoint = (options: IOptions) => {
     let build = 'query';
-    let parameters: KeywordTypeNode | TypeReferenceNode = ts.factory.createKeywordTypeNode(ts.SyntaxKind.VoidKeyword);
+    let parameters: KeywordTypeNode | TypeReferenceNode | UnionTypeNode = ts.factory.createKeywordTypeNode(ts.SyntaxKind.VoidKeyword);
     let args: Array<ParameterDeclaration> = [];
     let url: TemplateExpression | StringLiteral = ts.factory.createStringLiteral(options.url);
     let returnObject: Array<PropertyAssignment> = [
@@ -51,6 +52,13 @@ export const createEndpoint = (options: IOptions) => {
             ),
             undefined
         );
+
+        if(!options.schemas.body?.required?.length && !options.schemas.query?.required?.length && !options.schemas.path?.required?.length && !options.schemas.header?.required?.length) {
+            parameters = ts.factory.createUnionTypeNode([
+                parameters,
+                ts.factory.createKeywordTypeNode(ts.SyntaxKind.VoidKeyword)
+            ]);
+        }
 
         args.push(
             ts.factory.createParameterDeclaration(
@@ -138,20 +146,27 @@ export const createEndpoint = (options: IOptions) => {
                             ts.factory.createIdentifier(MAP[schemaKey]),
                             ts.factory.createObjectLiteralExpression(
                                 keys.map((key) => {
-                                    let access = ts.factory.createPropertyAccessExpression(
-                                        ts.factory.createPropertyAccessExpression(
+                                    let paramsAccess = ts.factory.createPropertyAccessExpression(
+                                        ts.factory.createIdentifier('params'),
+                                        ts.factory.createIdentifier(schemaKey)
+                                    );
+
+                                    if(!options.schemas[schemaKey]?.required?.length) {
+                                        paramsAccess = ts.factory.createPropertyAccessChain(
                                             ts.factory.createIdentifier('params'),
+                                            ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
                                             ts.factory.createIdentifier(schemaKey)
-                                        ),
+                                        )
+                                    }
+
+                                    let access = ts.factory.createPropertyAccessExpression(
+                                        paramsAccess,
                                         ts.factory.createIdentifier(key)
                                     );
 
-                                    if(!options.schemas.query?.required?.includes(key)) {
+                                    if(!options.schemas[schemaKey]?.required?.includes(key)) {
                                         access = ts.factory.createPropertyAccessChain(
-                                            ts.factory.createPropertyAccessExpression(
-                                                ts.factory.createIdentifier('params'),
-                                                ts.factory.createIdentifier(schemaKey)
-                                            ),
+                                            paramsAccess,
                                             ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
                                             ts.factory.createIdentifier(key)
                                         );
@@ -211,7 +226,7 @@ export const createEndpoint = (options: IOptions) => {
         )
     );
 
-    const sourceFile = ts.createSourceFile('extension.ts', '', ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+    const sourceFile = ts.createSourceFile('endpoint.ts', '', ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
     const printer = ts.createPrinter();
 
     return {
