@@ -114,11 +114,13 @@ export class Swagger {
             if('in' in parameter) {
                 const key = parameter.in === 'formData' ? 'body' : parameter.in;
 
-                accumulator[key] = {
-                    properties: {},
-                    required  : [],
-                    type      : 'object'
-                };
+                if(!accumulator[key]) {
+                    accumulator[key] = {
+                        properties: {},
+                        required  : [],
+                        type      : 'object'
+                    };
+                }
 
                 if(parameter.required) {
                     // @ts-ignore
