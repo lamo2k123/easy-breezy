@@ -1,6 +1,8 @@
 import ts, {
+    ElementAccessExpression,
     KeywordTypeNode,
     ParameterDeclaration,
+    PropertyAccessExpression,
     PropertyAssignment,
     StringLiteral,
     TemplateExpression,
@@ -159,10 +161,17 @@ export const createEndpoint = (options: IOptions) => {
                                         )
                                     }
 
-                                    let access = ts.factory.createPropertyAccessExpression(
+                                    let access: PropertyAccessExpression | ElementAccessExpression = ts.factory.createPropertyAccessExpression(
                                         paramsAccess,
                                         ts.factory.createIdentifier(key)
                                     );
+
+                                    if(key.includes('-')) {
+                                        access = ts.factory.createElementAccessExpression(
+                                            paramsAccess,
+                                            ts.factory.createStringLiteral(key)
+                                        );
+                                    }
 
                                     if(!options.schemas[schemaKey]?.required?.includes(key)) {
                                         access = ts.factory.createPropertyAccessChain(
@@ -170,10 +179,18 @@ export const createEndpoint = (options: IOptions) => {
                                             ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
                                             ts.factory.createIdentifier(key)
                                         );
+
+                                        if(key.includes('-')) {
+                                            access = ts.factory.createElementAccessChain(
+                                                paramsAccess,
+                                                ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
+                                                ts.factory.createStringLiteral(key)
+                                            );
+                                        }
                                     }
 
                                     return ts.factory.createPropertyAssignment(
-                                        ts.factory.createIdentifier(key),
+                                        key.includes('-') ? ts.factory.createStringLiteral(key) : ts.factory.createIdentifier(key),
                                         access
                                     )
                                 }),

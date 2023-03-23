@@ -421,6 +421,7 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
                                         path     : collector[path][method].path,
                                         body     : collector[path][method].body,
                                         query    : collector[path][method].query,
+                                        header   : collector[path][method].header,
                                         responses: Object.keys(collector[path][method].responses).reduce((accumulator, key) => {
                                             if(key.startsWith('2')) {
                                                 accumulator[key] = collector[path][method].responses[key];
