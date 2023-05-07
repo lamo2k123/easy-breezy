@@ -1,27 +1,20 @@
 {
-    "name": "easy-breezy",
-    "version": "1.1.10",
-    "description": "",
-    "main": "src/index.mjs",
-    "bin": {
-        "easy-breezy": "src/index.mjs",
-        "easybreezy": "src/index.mjs"
-    },
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "@apidevtools/swagger-parser": "^10.1.0",
-        "camelcase": "^7.0.1",
-        "chalk": "^5.2.0",
-        "deep-sort-object": "^1.0.2",
-        "enquirer": "^2.3.6",
-        "eslint": "^8.30.0",
-        "handlebars": "^4.7.7",
-        "json-schema-to-typescript": "^11.0.2",
-        "pascalcase": "^2.0.0",
-        "yargs": "^17.6.2"
-    }
+  "name": "easy-breezy-mono",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "workspaces": [
+    "packages/core",
+    "packages/generator-api",
+    "packages/plugin-eslint",
+    "packages/plugin-git"
+  ],
+  "devDependencies": {
+    "@types/lodash.get": "4.4.7",
+    "@types/lodash.setwith": "4.3.7",
+    "@types/node": "18.15.5",
+    "typescript": "5.0.2"
+  }
 }

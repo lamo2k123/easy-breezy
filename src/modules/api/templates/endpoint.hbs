@@ -1,8 +1,0 @@
-{{nameFunction}}: build.{{builder}}<{{typeResponse}}, {{#if isParameters}}{{importName}}.IParameters{{#if notRequiredParameters}} | void{{/if}}{{else}}void{{/if}}>({
-    query: ({{#if isParameters}}params{{/if}}) => ({
-        url   : `{{endpoint}}`,
-        method: '{{method}}',
-        params: {{paramsPayload}},
-        body  : {{bodyPayload}}
-    })
-})

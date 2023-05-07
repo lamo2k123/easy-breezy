@@ -1,0 +1,22 @@
+{
+    "message": "API - Адаптер к API",
+    "question": {
+        "dir": "Укажите директорию адаптера:",
+        "host": "Укажите адрес на схему OpenAPI (Пример: https://example.com/openapi.json):",
+        "name": "Укажите название API:",
+        "base-url": "Укажите baseUrl API:",
+        "endpoints": "Выберите необходимые энпоинты (поиск по строке):"
+    },
+    "validation": {
+        "required": "Это поле обязательное"
+    },
+    "output": {
+        "loading-host": "Подождите идет загрузка схемы API ({{- host}})..."
+    },
+    "comments": {
+        "hands-off": "Этот файл был создан автоматически.\n    НЕ ИЗМЕНЯЙТЕ ЕГО ВРУЧНУЮ!\n    Вместо изменения вручную используйте `easy-breezy`",
+        "api-context": "Если у вас есть необходимость в использование контекста хранилища для createApi.\n    Вы это можете сделать здесь по нижеприведенному примеру.\n\n    https://redux-toolkit.js.org/rtk-query/usage/customizing-create-api\n\n    Example:\n    \n    import { createDispatchHook, createSelectorHook, createStoreHook } from 'react-redux';\n\n    export const createApi = buildCreateApi(\n        coreModule(),\n        reactHooksModule({\n            useDispatch: createDispatchHook(context),\n            useSelector: createSelectorHook(context),\n            useStore   : createStoreHook(context)\n        })\n    );",
+        "api-base-query": "Подробное описание допустимых параметров и примеров `fetchBaseQuery` можно посмотреть по ссылке.\n\n    https://redux-toolkit.js.org/rtk-query/api/fetchBaseQuery#parameters",
+        "api-enhance-endpoints": "Подробное описание взаимодействия с `enhanceEndpoints` можно посмотреть по ссылке.\n\n    https://redux-toolkit.js.org/rtk-query/api/created-api/code-splitting#enhanceendpoints"
+    }
+}

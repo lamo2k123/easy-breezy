@@ -1,0 +1,50 @@
+{
+    "name": "@easy-breezy/generator-api",
+    "version": "2.0.21",
+    "main": "dist/index.js",
+    "type": "module",
+    "description": "RTK adapter generator from OpenAPI specification",
+    "keywords": [
+        "easy-breezy",
+        "generator",
+        "openapi",
+        "swagger",
+        "rtk",
+        "codegen"
+    ],
+    "homepage": "https://github.com/lamo2k123/easy-breezy",
+    "bugs": {
+        "url": "https://github.com/lamo2k123/easy-breezy/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lamo2k123/easy-breezy"
+    },
+    "scripts": {
+        "start": "npm run build -- -w",
+        "build": "tsc -P tsconfig.json"
+    },
+    "author": {
+        "name": "Aleksey Novikov",
+        "email": "lamo2k123@gmail.com",
+        "url": "https://github.com/lamo2k123"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "@apidevtools/swagger-parser": "10.1.0",
+        "camelcase": "7.0.1",
+        "enquirer": "2.3.6",
+        "json-schema-to-typescript": "12.0.0",
+        "lodash.get": "4.4.2",
+        "lodash.setwith": "4.3.2",
+        "ts-clone-node": "2.0.4",
+        "typescript": "4.9.5"
+    },
+    "devDependencies": {
+        "openapi-types": "12.1.0"
+    },
+    "engines": {
+        "node": ">=18",
+        "npm": ">=8"
+    }
+}

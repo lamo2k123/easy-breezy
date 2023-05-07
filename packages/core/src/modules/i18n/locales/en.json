@@ -1,0 +1,36 @@
+{
+    "core": {
+        "fs": {
+            "create": {
+                "dir": "++ Directory created: {{- path}}",
+                "file": "++ File created: {{- path}}",
+                "update": "-+ Updated file: {{- path}}"
+            }
+        },
+        "config": {
+            "load": {
+                "error": "An error occurred while loading the configuration file! Perhaps the file is corrupted."
+            },
+            "question": {
+                "create": "Initialize `easy-breezy` in a directory: {{- path}}.",
+                "save": "Save config changes?"
+            },
+            "found": {
+                "generator": "Found a new generator ({{name}}), want to use it?",
+                "plugin": "Found a new plugin ({{name}}), want to use it?"
+            }
+        },
+        "i18n": {
+            "question": "Choose your language.",
+            "answers": {
+                "ru": "Русский",
+                "en": "English"
+            }
+        }
+    },
+    "generator": {
+        "question": {
+            "generator": "What will we generate?"
+        }
+    }
+}

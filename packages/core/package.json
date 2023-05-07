@@ -1,0 +1,61 @@
+{
+    "name": "@easy-breezy/core",
+    "version": "2.0.21",
+    "main": "dist/index.js",
+    "type": "module",
+    "types": "dist/types/index.d.ts",
+    "description": "Command line root module",
+    "keywords": [
+        "easy-breezy",
+        "core",
+        "codegen"
+    ],
+    "homepage": "https://github.com/lamo2k123/easy-breezy",
+    "bugs": {
+        "url": "https://github.com/lamo2k123/easy-breezy/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/lamo2k123/easy-breezy"
+    },
+    "imports": {
+        "#module/*": "./dist/modules/*/index.js",
+        "#helper/*": "./dist/helpers/*/index.js"
+    },
+    "exports": {
+        ".": {
+            "types": "./dist/types/index.d.ts",
+            "import": "./dist/index.js"
+        },
+        "./helpers/deep-sort-object": {
+            "import": "./dist/helpers/deep-sort-object/index.js",
+            "types": "./dist/types/helpers/deep-sort-object/index.d.ts"
+        }
+    },
+    "scripts": {
+        "start": "npm run build -- -w",
+        "build": "tsc -P tsconfig.json"
+    },
+    "author": {
+        "name": "Aleksey Novikov",
+        "email": "lamo2k123@gmail.com",
+        "url": "https://github.com/lamo2k123"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "ansi-styles": "6.2.1",
+        "commander": "10.0.0",
+        "enquirer": "2.3.6",
+        "i18next": "22.4.13",
+        "lodash.get": "4.4.2",
+        "lodash.setwith": "4.3.2"
+    },
+    "bin": {
+        "easy-breezy": "dist/index.js",
+        "easybreezy": "dist/index.js"
+    },
+    "engines": {
+        "node": ">=18",
+        "npm": ">=8"
+    }
+}
