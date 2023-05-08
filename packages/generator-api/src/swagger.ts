@@ -153,6 +153,32 @@ export class Swagger {
             return accumulator;
         }, {} as Record<PropertyKey, OpenAPIV3.SchemaObject>);
 
+        if(result.path?.type === 'object') {
+            for(const key in result.path.properties) {
+                const properties = result.path.properties[key];
+                if(properties && 'type' in properties && properties.type === 'number') {
+                    result.path.properties[key] = {
+                        oneOf: [properties, {
+                            type: 'string'
+                        }]
+                    };
+                }
+            }
+        }
+
+        if(result.header?.type === 'object') {
+            for(const key in result.header.properties) {
+                const properties = result.header.properties[key];
+                if(properties && 'type' in properties && properties.type === 'number') {
+                    result.header.properties[key] = {
+                        oneOf: [properties, {
+                            type: 'string'
+                        }]
+                    };
+                }
+            }
+        }
+
         if('requestBody' in endpoint && endpoint.requestBody) {
             if('content' in endpoint.requestBody) {
                 const schema = endpoint.requestBody.content['application/json']?.schema || endpoint.requestBody.content['multipart/form-data']?.schema;
