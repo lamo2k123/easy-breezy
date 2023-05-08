@@ -1,4 +1,4 @@
-#!/usr/bin/env node --no-warnings
+#!/usr/bin/env node
 
 import i18n from './modules/i18n/index.js';
 import config from './modules/config/index.js';
