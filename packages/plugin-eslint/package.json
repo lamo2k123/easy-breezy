@@ -1,6 +1,6 @@
 {
     "name": "@easy-breezy/plugin-eslint",
-    "version": "2.0.27",
+    "version": "2.0.28",
     "description": "Used to format files according to the rules ESLint",
     "keywords": [
         "easy-breezy",
