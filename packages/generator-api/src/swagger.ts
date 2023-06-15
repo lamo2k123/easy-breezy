@@ -15,7 +15,7 @@ export class Swagger {
 
             this.payload = await SwaggerParser.dereference(payload, {
                 dereference: {
-                    circular: false
+                    circular: true
                 }
             });
 
