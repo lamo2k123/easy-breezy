@@ -78,7 +78,7 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
                         const keys = Object.keys(json);
 
                         for(const key of keys) {
-                            if(key === 'title' && (keys.includes('type') || keys.includes('allOf') || keys.includes('oneOf'))) {
+                            if(key === 'title' && (keys.includes('type') || keys.includes('allOf') || keys.includes('oneOf')) && !json[key]?.type) {
                                 delete json[key];
                             }
 
