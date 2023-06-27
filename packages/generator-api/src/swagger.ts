@@ -183,7 +183,7 @@ export class Swagger {
             if('content' in endpoint.requestBody) {
                 const schema = endpoint.requestBody.content['application/json']?.schema || endpoint.requestBody.content['multipart/form-data']?.schema;
 
-                if(schema && 'type' in schema) {
+                if(schema && ('type' in schema || 'allOf' in schema)) {
                     result.body = schema;
                 }
             }
