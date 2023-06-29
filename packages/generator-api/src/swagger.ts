@@ -1,5 +1,6 @@
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { OpenAPIV3, OpenAPIV2, OpenAPI } from 'openapi-types';
+import mergeAllOf from 'json-schema-merge-allof';
 
 export class Swagger {
 
@@ -181,10 +182,17 @@ export class Swagger {
 
         if('requestBody' in endpoint && endpoint.requestBody) {
             if('content' in endpoint.requestBody) {
-                const schema = endpoint.requestBody.content['application/json']?.schema || endpoint.requestBody.content['multipart/form-data']?.schema;
+                let schema = endpoint.requestBody.content['application/json']?.schema || endpoint.requestBody.content['multipart/form-data']?.schema;
 
-                if(schema && ('type' in schema || 'allOf' in schema)) {
-                    result.body = schema;
+                if(schema) {
+                    if('allOf' in schema) {
+                        // @ts-ignore
+                        schema = mergeAllOf(schema);
+                    }
+
+                    if(schema && 'type' in schema) {
+                        result.body = schema;
+                    }
                 }
             }
         }
