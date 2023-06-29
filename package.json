@@ -12,13 +12,9 @@
     "packages/plugin-git"
   ],
   "devDependencies": {
-    "@types/json-schema-merge-allof": "0.6.1",
     "@types/lodash.get": "4.4.7",
     "@types/lodash.setwith": "4.3.7",
     "@types/node": "18.15.5",
     "typescript": "5.0.2"
-  },
-  "dependencies": {
-    "json-schema-merge-allof": "0.8.1"
   }
 }
