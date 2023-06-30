@@ -20,6 +20,7 @@ import { createTypes } from './ast/create-types/index.js';
 
 import ru from './locales/ru.json' assert { type: "json" };
 import en from './locales/en.json' assert { type: "json" };
+import * as console from 'console';
 
 type TMethodV2 = 'get' | 'put' | 'post' | 'delete' | 'options' | 'head' | 'patch';
 type TMethod = TMethodV2 | 'trace';
@@ -94,21 +95,48 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
                 }
 
                 private schemaStringify = (payload: any) => {
-                    const cache: Array<any> = [];
+                    const ensureProperties = (obj: Object) => {
+                        const seen: Array<any> = [];
 
-                    return JSON.stringify(payload, (key, value) => {
-                        if(key === 'x-marker') {
-                            return;
-                        }
+                        const visit = (value: Object): any => {
+                            if (value === null || typeof value !== 'object') {
+                                return value;
+                            }
 
-                        if(typeof value === 'object' && value !== null) {
-                            if(cache.includes(value)) {
+                            if(seen.indexOf(value) !== -1) {
                                 return {
                                     type: 'null'
                                 };
                             }
 
-                            cache.push(value);
+                            seen.push(value);
+
+                            if (Array.isArray(value)) {
+                                const result = value.map(visit);
+
+                                seen.pop();
+
+                                return result;
+                            }
+
+                            const result = Object.keys(value).reduce((acc, key) => {
+                                // @ts-ignore
+                                acc[key] = visit(value[key]);
+
+                                return acc;
+                            }, {});
+
+                            seen.pop();
+
+                            return result;
+                        };
+
+                        return visit(obj);
+                    }
+
+                    return JSON.stringify(ensureProperties(payload), (key, value) => {
+                        if(key === 'x-marker') {
+                            return;
                         }
 
                         return value;
@@ -366,6 +394,8 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
 
                             return accumulator;
                         }, {} as Record<string, any>);
+
+                    // console.log(123, collector['/api/issue/issue/'].get.responses['200'].properties.results.items.properties.client_user)
 
                     this.normalizeJSON(collector);
 
