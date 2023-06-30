@@ -117,12 +117,16 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
 
                 private schemaSave = (path: string, payload: object) => {
                     if(payload) {
-                        fs.updateFile(path, this.schemaStringify(deepSortObject(payload)), true);
+                        // Stringify перед сортировкой для удаление circular structure
+                        const stringPayload = this.schemaStringify(payload);
+                        const sortedPayload = deepSortObject(JSON.parse(stringPayload))
+
+                        fs.updateFile(path, this.schemaStringify(sortedPayload), true);
                     }
                 }
 
                 private schemaToType = async (filename: string, payload: object) => {
-                    const schema = JSON.parse(this.schemaStringify(deepSortObject(payload)));
+                    const schema = deepSortObject(JSON.parse(this.schemaStringify(payload)));
                     const result = await compile(schema, filename, {
                         bannerComment         : '',
                         unreachableDefinitions: true,
