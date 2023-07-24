@@ -158,11 +158,15 @@ export class Swagger {
             for(const key in result.path.properties) {
                 const properties = result.path.properties[key];
                 if(properties && 'type' in properties && properties.type === 'number') {
-                    result.path.properties[key] = {
-                        oneOf: [properties, {
-                            type: 'string'
-                        }]
-                    };
+                    if(properties.format) {
+                        properties.description = `Source type: ${properties.type}/${properties.format}`;
+
+                        delete properties.format;
+                    }
+
+                    properties.type = 'string';
+
+                    result.path.properties[key] = properties;
                 }
             }
         }
@@ -171,11 +175,15 @@ export class Swagger {
             for(const key in result.header.properties) {
                 const properties = result.header.properties[key];
                 if(properties && 'type' in properties && properties.type === 'number') {
-                    result.header.properties[key] = {
-                        oneOf: [properties, {
-                            type: 'string'
-                        }]
-                    };
+                    if(properties.format) {
+                        properties.description = `Source type: ${properties.type}/${properties.format}`;
+
+                        delete properties.format;
+                    }
+
+                    properties.type = 'string';
+
+                    result.header.properties[key] = properties;
                 }
             }
         }
