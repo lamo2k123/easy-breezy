@@ -28,14 +28,15 @@
         "url": "https://github.com/lamo2k123"
     },
     "license": "MIT",
-    "dependencies": {
-        "eslint": "8.36.0"
+    "peerDependencies": {
+        "eslint": "*"
     },
     "engines": {
         "node": ">=18",
         "npm": ">=8"
     },
     "devDependencies": {
+        "eslint": "8.36.0",
         "@types/eslint": "8.21.3"
     }
 }
