@@ -157,7 +157,7 @@ export class Swagger {
         if(result.path?.type === 'object') {
             for(const key in result.path.properties) {
                 const properties = result.path.properties[key];
-                if(properties && 'type' in properties && properties.type === 'number') {
+                if(properties && 'type' in properties && (properties.type === 'number' || properties.type === 'integer')) {
                     if(properties.format) {
                         properties.description = `Source type: ${properties.type}/${properties.format}`;
 
@@ -174,7 +174,7 @@ export class Swagger {
         if(result.header?.type === 'object') {
             for(const key in result.header.properties) {
                 const properties = result.header.properties[key];
-                if(properties && 'type' in properties && properties.type === 'number') {
+                if(properties && 'type' in properties && (properties.type === 'number' || properties.type === 'integer')) {
                     if(properties.format) {
                         properties.description = `Source type: ${properties.type}/${properties.format}`;
 
