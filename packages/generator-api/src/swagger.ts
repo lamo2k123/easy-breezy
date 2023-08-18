@@ -106,7 +106,7 @@ export class Swagger {
         }, {} as Record<PropertyKey, OpenAPIV3.SchemaObject | OpenAPIV2.SchemaObject>);
     }
 
-    public getMethodParametersSchemas(path: string, method: OpenAPIV3.HttpMethods | OpenAPIV2.HttpMethods) {
+    public getMethodParametersSchemas(path: string, method: OpenAPIV3.HttpMethods | OpenAPIV2.HttpMethods, rewrite: Record<string, Record<string, OpenAPIV3.ParameterObject>> = {}) {
         const endpoint = this.getMethod(path, method);
         const global = this.getPathByKey(path).parameters || [];
         const parameters = [...global, ...(endpoint.parameters || [])]
@@ -114,6 +114,12 @@ export class Swagger {
         const result = parameters.reduce((accumulator, parameter) => {
             if('in' in parameter) {
                 const key = parameter.in === 'formData' ? 'body' : parameter.in;
+
+                if(rewrite[key]) {
+                    if(rewrite[key][parameter.name]) {
+                        Object.assign(parameter, rewrite[key][parameter.name]);
+                    }
+                }
 
                 if(!accumulator[key]) {
                     accumulator[key] = {
@@ -157,12 +163,16 @@ export class Swagger {
         if(result.path?.type === 'object') {
             for(const key in result.path.properties) {
                 const properties = result.path.properties[key];
-                if(properties && 'type' in properties && properties.type === 'number') {
-                    result.path.properties[key] = {
-                        oneOf: [properties, {
-                            type: 'string'
-                        }]
-                    };
+                if(properties && 'type' in properties && (properties.type === 'number' || properties.type === 'integer')) {
+                    if(properties.format) {
+                        properties.description = `Source type: ${properties.type}/${properties.format}`;
+
+                        delete properties.format;
+                    }
+
+                    properties.type = 'string';
+
+                    result.path.properties[key] = properties;
                 }
             }
         }
@@ -170,12 +180,16 @@ export class Swagger {
         if(result.header?.type === 'object') {
             for(const key in result.header.properties) {
                 const properties = result.header.properties[key];
-                if(properties && 'type' in properties && properties.type === 'number') {
-                    result.header.properties[key] = {
-                        oneOf: [properties, {
-                            type: 'string'
-                        }]
-                    };
+                if(properties && 'type' in properties && (properties.type === 'number' || properties.type === 'integer')) {
+                    if(properties.format) {
+                        properties.description = `Source type: ${properties.type}/${properties.format}`;
+
+                        delete properties.format;
+                    }
+
+                    properties.type = 'string';
+
+                    result.header.properties[key] = properties;
                 }
             }
         }

@@ -1,5 +1,5 @@
 import { dirname } from 'path';
-import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync, readdirSync, statSync } from 'fs';
 import { createHash } from 'crypto';
 
 import output from './../output/index.js';
@@ -121,6 +121,10 @@ export class FS {
 
         this.operations.removed.push(path);
     }
+
+    public readdirSync = readdirSync;
+
+    public statSync = statSync;
 }
 
 export default new FS();

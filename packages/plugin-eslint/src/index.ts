@@ -24,7 +24,8 @@ export default async ({ i18n, config, fs, output, colors, args }: IPluginProps) 
 
             output.info(i18n.t('progress', { count: files.length }));
 
-            const results = await eslint.lintFiles(files.map((file) => join(dirname(file), pattern)));
+            const unique = new Set(files.map((file) => join(dirname(file), pattern)));
+            const results = await eslint.lintFiles([...unique]);
 
             for(const result of results) {
                 if(result.output && result.filePath) {
