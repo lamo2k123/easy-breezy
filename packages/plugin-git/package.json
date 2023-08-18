@@ -29,8 +29,8 @@
     },
     "license": "MIT",
     "dependencies": {
-        "enquirer": "2.3.6",
-        "simple-git": "3.17.0"
+        "enquirer": "2.4.1",
+        "simple-git": "3.19.1"
     },
     "engines": {
         "node": ">=18",

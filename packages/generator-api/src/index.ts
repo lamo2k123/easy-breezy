@@ -1,7 +1,6 @@
-import { dirname, join, relative } from 'path';
+import { dirname, join, relative, basename } from 'path';
 import { fileURLToPath } from 'url';
 
-import { cloneNode } from 'ts-clone-node';
 import ts from 'typescript';
 import _get from 'lodash.get';
 import _setWith from 'lodash.setwith';
@@ -383,19 +382,41 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
                             for(const method of methods) {
                                 if(this.swagger.hasPathMethodByKey(endpointKey, method)) {
                                     const responses = this.swagger.getMethodResponsesSchemas(endpointKey, method);
-                                    const parameters = this.swagger.getMethodParametersSchemas(endpointKey, method);
+                                    const parameters = this.swagger.getMethodParametersSchemas(endpointKey, method, config.get(`options.${this.answers.name}.global.parameters`, {}));
 
                                     _setWith(accumulator, `${endpointName}.${method}`, parameters, Object);
                                     _setWith(accumulator, `${endpointName}.${method}.responses`, responses, Object);
                                 } else {
+                                    const path = this.path(this.answers.dir, this.answers.name, endpointName, method);
+
+                                    _setWith(accumulator, `${endpointName}.${method}.responses`, {}, Object);
+
+                                    if(fs.exists(path)) {
+                                        const files = fs.readdirSync(path).filter((file) => file.endsWith('.json'));
+
+                                        for(const file of files) {
+                                            const filePath = this.path(path, file);
+                                            const stat = fs.statSync(filePath);
+
+                                            if(stat.isFile()) {
+                                                const keyName = basename(file, '.json');
+                                                const fileContent = JSON.parse(fs.readFile(filePath));
+
+                                                if(!Number.isNaN(Number(keyName))) {
+                                                    _setWith(accumulator, `${endpointName}.${method}.responses.${keyName}`, fileContent || {}, Object);
+                                                } else {
+                                                    _setWith(accumulator, `${endpointName}.${method}.${keyName}`, fileContent, Object);
+                                                }
+                                            }
+                                        }
+                                    }
+
                                     needSaveEndpoints.push(this.path(endpointName, method))
                                 }
                             }
 
                             return accumulator;
                         }, {} as Record<string, any>);
-
-                    // console.log(123, collector['/api/issue/issue/'].get.responses['200'].properties.results.items.properties.client_user)
 
                     this.normalizeJSON(collector);
 
@@ -407,36 +428,39 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
                     for(const path in collector) {
                         for(const method in collector[path]) {
                             const types = [];
+                            const isNeedSave = needSaveEndpoints.includes(`${path}/${method}`);
 
-                            for(const key in collector[path][method]) {
-                                const dir = config.get('dir');
+                            if(!isNeedSave) {
+                                for(const key in collector[path][method]) {
+                                    const dir = config.get('dir');
 
-                                // Save schema
-                                if(dir && this.answers.name) {
-                                    if(key !== 'responses') {
-                                        this.schemaSave(join(dir, this.answers.name, path, method, `${key}.json`), collector[path][method][key]);
-                                    } else {
-                                        for(const HTTPCode of Object.keys(collector[path][method][key])) {
-                                            this.schemaSave(join(dir, this.answers.name, path, method, `${HTTPCode}.json`), collector[path][method][key][HTTPCode]);
+                                    // Save schema
+                                    if(dir && this.answers.name) {
+                                        if(key !== 'responses') {
+                                            this.schemaSave(join(dir, this.answers.name, path, method, `${key}.json`), collector[path][method][key]);
+                                        } else {
+                                            for(const HTTPCode of Object.keys(collector[path][method][key])) {
+                                                this.schemaSave(join(dir, this.answers.name, path, method, `${HTTPCode}.json`), collector[path][method][key][HTTPCode]);
+                                            }
                                         }
                                     }
-                                }
 
-                                // Generate TS types
-                                if(key === 'responses') {
-                                    for(const HTTPCode of Object.keys(collector[path][method][key])) {
-                                        const prefix = collector[path][method][key][HTTPCode].type === 'object' ? 'i' : 't';
+                                    // Generate TS types
+                                    if(key === 'responses') {
+                                        for(const HTTPCode of Object.keys(collector[path][method][key])) {
+                                            const prefix = collector[path][method][key][HTTPCode].type === 'object' ? 'i' : 't';
 
-                                        types.push(await this.schemaToType(`${prefix}-code-${HTTPCode}`, collector[path][method][key][HTTPCode]));
+                                            types.push(await this.schemaToType(`${prefix}-code-${HTTPCode}`, collector[path][method][key][HTTPCode]));
+                                        }
+                                    } else {
+                                        const filename = [collector[path][method][key].type === 'object' ? 'i' : 't', 'parameters', key];
+
+                                        if(this.swagger.hasFormDataMethod(this.path(this.answers.baseUrl, path), method as OpenAPIV3.HttpMethods) && key === 'body') {
+                                            filename.push('form-data')
+                                        }
+
+                                        types.push(await this.schemaToType(filename.join('-'), collector[path][method][key]));
                                     }
-                                } else {
-                                    const filename = [collector[path][method][key].type === 'object' ? 'i' : 't', 'parameters', key];
-
-                                    if(this.swagger.hasFormDataMethod(this.path(this.answers.baseUrl, path), method as OpenAPIV3.HttpMethods) && key === 'body') {
-                                        filename.push('form-data')
-                                    }
-
-                                    types.push(await this.schemaToType(filename.join('-'), collector[path][method][key]));
                                 }
                             }
 
@@ -445,33 +469,44 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
 
                             imports.push(pathRelative);
 
-                            fs.updateFile(
-                                pathEndpoint,
-                                createTypes({
-                                    i18n,
-                                    types,
-                                    hasFormData: this.swagger.hasFormDataMethod(this.path(this.answers.baseUrl, path), method as OpenAPIV3.HttpMethods),
-                                    schemas   : {
-                                        path     : collector[path][method].path,
-                                        body     : collector[path][method].body,
-                                        query    : collector[path][method].query,
-                                        header   : collector[path][method].header,
-                                        responses: Object.keys(collector[path][method].responses).reduce((accumulator, key) => {
-                                            if(key.startsWith('2')) {
-                                                accumulator[key] = collector[path][method].responses[key];
-                                            }
+                            if(!isNeedSave) {
+                                fs.updateFile(
+                                    pathEndpoint,
+                                    createTypes({
+                                        i18n,
+                                        types,
+                                        hasFormData: this.swagger.hasFormDataMethod(this.path(this.answers.baseUrl, path), method as OpenAPIV3.HttpMethods),
+                                        schemas   : {
+                                            path     : collector[path][method].path,
+                                            body     : collector[path][method].body,
+                                            query    : collector[path][method].query,
+                                            header   : collector[path][method].header,
+                                            responses: Object.keys(collector[path][method].responses).reduce((accumulator, key) => {
+                                                if(key.startsWith('2')) {
+                                                    accumulator[key] = collector[path][method].responses[key];
+                                                }
 
-                                            return accumulator;
-                                        }, {} as Record<PropertyKey, OpenAPIV3.SchemaObject>)
-                                    }
-                                }).print,
-                                true
-                            );
+                                                return accumulator;
+                                            }, {} as Record<PropertyKey, OpenAPIV3.SchemaObject>)
+                                        }
+                                    }).print,
+                                    true
+                                );
+                            }
+
+                            let hasFormData = false;
+
+                            if(isNeedSave) {
+                                const fileContent = fs.readFile(pathEndpoint);
+                                hasFormData = fileContent.includes('interface IParametersBody extends FormData');
+                            } else {
+                                hasFormData = this.swagger.hasFormDataMethod(this.path(this.answers.baseUrl, path), method as OpenAPIV3.HttpMethods);
+                            }
 
                             endpointsAST.push(
                                 createEndpoint({
                                     name       : this.camelcase(this.path(path, method)),
-                                    hasFormData: this.swagger.hasFormDataMethod(this.path(this.answers.baseUrl, path), method as OpenAPIV3.HttpMethods),
+                                    hasFormData,
                                     url        : path,
                                     importName : this.camelcase(pathRelative),
                                     method     : method as OpenAPIV3.HttpMethods,
@@ -486,28 +521,6 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
                                 }).AST
                             )
                         }
-                    }
-
-                    if(fs.exists(this.path(pathAPI, 'index.ts'))) {
-                        const sourceFile = ts.createSourceFile('index.ts', fs.readFile(this.path(pathAPI, 'index.ts')), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-
-                        const find = (node: ts.Node) => {
-                            if(node.kind === ts.SyntaxKind.PropertyAssignment) {
-                                const { name } = node as ts.PropertyAssignment;
-                                const match = needSaveEndpoints.find((value) => this.camelcase(value) === name.getText());
-
-                                if(match) {
-                                    endpointsAST.push(cloneNode(node));
-                                    imports.push(relative(pathAPI, this.path(this.answers.dir, this.answers.name, match)));
-
-                                    return;
-                                }
-                            }
-
-                            node.forEachChild(find);
-                        }
-
-                        sourceFile.forEachChild(find);
                     }
 
                     fs.updateFile(
