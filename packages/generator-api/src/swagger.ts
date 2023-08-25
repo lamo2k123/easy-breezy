@@ -194,6 +194,28 @@ export class Swagger {
             }
         }
 
+        if(result.query?.type === 'object') {
+            for(const key in result.query.properties) {
+                const properties = result.query.properties[key];
+                if(properties && 'type' in properties && (properties.type === 'number' || properties.type === 'integer')) {
+                    if(properties.format) {
+                        properties.description = `Source type: ${properties.type}/${properties.format}`;
+
+                        delete properties.format;
+                    }
+
+                    result.query.properties[key] = {
+                        description: properties.description,
+                        oneOf: [{
+                            type: 'number'
+                        }, {
+                            type: 'string'
+                        }]
+                    };
+                }
+            }
+        }
+
         if('requestBody' in endpoint && endpoint.requestBody) {
             if('content' in endpoint.requestBody) {
                 let schema = endpoint.requestBody.content['application/json']?.schema || endpoint.requestBody.content['multipart/form-data']?.schema;
