@@ -54,6 +54,11 @@ export const createIndex = (options: IOptions) => {
                                 false,
                                 undefined,
                                 ts.factory.createIdentifier("enhanceEndpoints")
+                            ),
+                            ts.factory.createImportSpecifier(
+                                false,
+                                undefined,
+                                ts.factory.createIdentifier("injectEndpoints")
                             )
                         ])
                     ),
@@ -69,7 +74,7 @@ export const createIndex = (options: IOptions) => {
                 [ts.factory.createToken(ts.SyntaxKind.ExportKeyword)],
                 ts.factory.createVariableDeclarationList(
                     [ts.factory.createVariableDeclaration(
-                        ts.factory.createIdentifier("api"),
+                        ts.factory.createIdentifier("base"),
                         undefined,
                         undefined,
                         ts.factory.createCallExpression(
@@ -114,6 +119,22 @@ export const createIndex = (options: IOptions) => {
                                 ],
                                 true
                             )]
+                        )
+                    )],
+                    ts.NodeFlags.Const
+                )
+            ),
+            ts.factory.createVariableStatement(
+                [ts.factory.createToken(ts.SyntaxKind.ExportKeyword)],
+                ts.factory.createVariableDeclarationList(
+                    [ts.factory.createVariableDeclaration(
+                        ts.factory.createIdentifier("api"),
+                        undefined,
+                        undefined,
+                        ts.factory.createCallExpression(
+                            ts.factory.createIdentifier("injectEndpoints"),
+                            undefined,
+                            [ts.factory.createIdentifier("base")]
                         )
                     )],
                     ts.NodeFlags.Const
