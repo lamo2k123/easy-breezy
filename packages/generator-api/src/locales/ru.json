@@ -17,6 +17,7 @@
         "hands-off": "Этот файл был создан автоматически.\n    НЕ ИЗМЕНЯЙТЕ ЕГО ВРУЧНУЮ!\n    Вместо изменения вручную используйте `easy-breezy`",
         "api-context": "Если у вас есть необходимость в использование контекста хранилища для createApi.\n    Вы это можете сделать здесь по нижеприведенному примеру.\n\n    https://redux-toolkit.js.org/rtk-query/usage/customizing-create-api\n\n    Example:\n    \n    import { createDispatchHook, createSelectorHook, createStoreHook } from 'react-redux';\n\n    export const createApi = buildCreateApi(\n        coreModule(),\n        reactHooksModule({\n            useDispatch: createDispatchHook(context),\n            useSelector: createSelectorHook(context),\n            useStore   : createStoreHook(context)\n        })\n    );",
         "api-base-query": "Подробное описание допустимых параметров и примеров `fetchBaseQuery` можно посмотреть по ссылке.\n\n    https://redux-toolkit.js.org/rtk-query/api/fetchBaseQuery#parameters",
-        "api-enhance-endpoints": "Подробное описание взаимодействия с `enhanceEndpoints` можно посмотреть по ссылке.\n\n    https://redux-toolkit.js.org/rtk-query/api/created-api/code-splitting#enhanceendpoints"
+        "api-enhance-endpoints": "Подробное описание взаимодействия с `enhanceEndpoints` можно посмотреть по ссылке.\n\n    https://redux-toolkit.js.org/rtk-query/api/created-api/code-splitting#enhanceendpoints",
+        "api-inject-endpoints": "Подробное описание взаимодействия с `injectEndpoints` можно посмотреть по ссылке.\n\n    https://redux-toolkit.js.org/rtk-query/api/created-api/code-splitting#injectendpoints"
     }
 }

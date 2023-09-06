@@ -43,8 +43,8 @@ export const createExtension = ({ i18n }: { i18n: IGeneratorProps['i18n'] }) => 
                     undefined,
                     ts.factory.createNamedImports([ts.factory.createImportSpecifier(
                         false,
-                        ts.factory.createIdentifier("api"),
-                        ts.factory.createIdentifier("apiType")
+                        ts.factory.createIdentifier("base"),
+                        ts.factory.createIdentifier("baseApiType")
                     )])
                 ),
                 ts.factory.createStringLiteral("./"),
@@ -155,7 +155,7 @@ export const createExtension = ({ i18n }: { i18n: IGeneratorProps['i18n'] }) => 
                                     ts.factory.createIdentifier("api"),
                                     undefined,
                                     ts.factory.createTypeQueryNode(
-                                        ts.factory.createIdentifier("apiType"),
+                                        ts.factory.createIdentifier("baseApiType"),
                                         undefined
                                     ),
                                     undefined
@@ -198,6 +198,73 @@ export const createExtension = ({ i18n }: { i18n: IGeneratorProps['i18n'] }) => 
                 ),
                 ts.SyntaxKind.MultiLineCommentTrivia,
                 `\n    ${i18n.t('comments.api-enhance-endpoints')}\n`,
+                true
+            ),
+            ts.addSyntheticLeadingComment(
+                ts.factory.createVariableStatement(
+                    [ts.factory.createToken(ts.SyntaxKind.ExportKeyword)],
+                    ts.factory.createVariableDeclarationList(
+                        [ts.factory.createVariableDeclaration(
+                            ts.factory.createIdentifier("injectEndpoints"),
+                            undefined,
+                            undefined,
+                            ts.factory.createArrowFunction(
+                                undefined,
+                                undefined,
+                                [ts.factory.createParameterDeclaration(
+                                    undefined,
+                                    undefined,
+                                    ts.factory.createIdentifier("api"),
+                                    undefined,
+                                    ts.factory.createTypeQueryNode(
+                                        ts.factory.createIdentifier("baseApiType"),
+                                        undefined
+                                    ),
+                                    undefined
+                                )],
+                                undefined,
+                                ts.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+                                ts.factory.createBlock(
+                                    [ts.factory.createReturnStatement(ts.factory.createCallExpression(
+                                        ts.factory.createPropertyAccessExpression(
+                                            ts.factory.createIdentifier("api"),
+                                            ts.factory.createIdentifier("injectEndpoints")
+                                        ),
+                                        undefined,
+                                        [ts.factory.createObjectLiteralExpression(
+                                            [ts.factory.createPropertyAssignment(
+                                                ts.factory.createIdentifier("endpoints"),
+                                                ts.factory.createArrowFunction(
+                                                    undefined,
+                                                    undefined,
+                                                    [ts.factory.createParameterDeclaration(
+                                                        undefined,
+                                                        undefined,
+                                                        ts.factory.createIdentifier("build"),
+                                                        undefined,
+                                                        undefined,
+                                                        undefined
+                                                    )],
+                                                    undefined,
+                                                    ts.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+                                                    ts.factory.createParenthesizedExpression(ts.factory.createObjectLiteralExpression(
+                                                        [],
+                                                        false
+                                                    ))
+                                                )
+                                            )],
+                                            true
+                                        )]
+                                    ))],
+                                    true
+                                )
+                            )
+                        )],
+                        ts.NodeFlags.Const
+                    )
+                ),
+                ts.SyntaxKind.MultiLineCommentTrivia,
+                `\n    ${i18n.t('comments.api-inject-endpoints')}\n`,
                 true
             )
         ]
