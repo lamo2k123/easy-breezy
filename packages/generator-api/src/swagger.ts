@@ -135,7 +135,7 @@ export class Swagger {
                 }
 
                 if(parameter.schema && parameter.in === 'body') {
-                    if(parameter.required && !parameter.schema.required) {
+                    if(parameter.required && parameter.schema.type !== 'object') {
                         parameter.schema.required = true;
                     }
 
