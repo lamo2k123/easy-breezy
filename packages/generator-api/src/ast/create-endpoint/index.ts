@@ -129,76 +129,88 @@ export const createEndpoint = (options: IOptions) => {
 
     for(const schemaKey of schemasKeys) {
         if(options.schemas[schemaKey]) {
-            const keys = Object.keys(options.schemas[schemaKey]?.properties || {});
+            if(options.schemas[schemaKey]?.type === 'object') {
+                const keys = Object.keys(options.schemas[schemaKey]?.properties || {});
 
-            if(keys.length) {
-                if(schemaKey === 'body' && options.hasFormData) {
-                    returnObject.push(
-                        ts.factory.createPropertyAssignment(
-                            ts.factory.createIdentifier(MAP[schemaKey]),
-                            ts.factory.createPropertyAccessExpression(
-                                ts.factory.createIdentifier('params'),
-                                ts.factory.createIdentifier(schemaKey)
+                if(keys.length) {
+                    if(schemaKey === 'body' && options.hasFormData) {
+                        returnObject.push(
+                            ts.factory.createPropertyAssignment(
+                                ts.factory.createIdentifier(MAP[schemaKey]),
+                                ts.factory.createPropertyAccessExpression(
+                                    ts.factory.createIdentifier('params'),
+                                    ts.factory.createIdentifier(schemaKey)
+                                )
                             )
-                        )
-                    );
-                } else {
-                    returnObject.push(
-                        ts.factory.createPropertyAssignment(
-                            ts.factory.createIdentifier(MAP[schemaKey]),
-                            ts.factory.createObjectLiteralExpression(
-                                keys.map((key) => {
-                                    let paramsAccess = ts.factory.createPropertyAccessExpression(
-                                        ts.factory.createIdentifier('params'),
-                                        ts.factory.createIdentifier(schemaKey)
-                                    );
-
-                                    if(!options.schemas[schemaKey]?.required?.length) {
-                                        paramsAccess = ts.factory.createPropertyAccessChain(
+                        );
+                    } else {
+                        returnObject.push(
+                            ts.factory.createPropertyAssignment(
+                                ts.factory.createIdentifier(MAP[schemaKey]),
+                                ts.factory.createObjectLiteralExpression(
+                                    keys.map((key) => {
+                                        let paramsAccess = ts.factory.createPropertyAccessExpression(
                                             ts.factory.createIdentifier('params'),
-                                            ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
                                             ts.factory.createIdentifier(schemaKey)
-                                        )
-                                    }
-
-                                    let access: PropertyAccessExpression | ElementAccessExpression = ts.factory.createPropertyAccessExpression(
-                                        paramsAccess,
-                                        ts.factory.createIdentifier(key)
-                                    );
-
-                                    if(key.includes('-')) {
-                                        access = ts.factory.createElementAccessExpression(
-                                            paramsAccess,
-                                            ts.factory.createStringLiteral(key)
                                         );
-                                    }
 
-                                    if(!options.schemas[schemaKey]?.required?.includes(key)) {
-                                        access = ts.factory.createPropertyAccessChain(
+                                        if(!options.schemas[schemaKey]?.required?.length) {
+                                            paramsAccess = ts.factory.createPropertyAccessChain(
+                                                ts.factory.createIdentifier('params'),
+                                                ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
+                                                ts.factory.createIdentifier(schemaKey)
+                                            )
+                                        }
+
+                                        let access: PropertyAccessExpression | ElementAccessExpression = ts.factory.createPropertyAccessExpression(
                                             paramsAccess,
-                                            ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
                                             ts.factory.createIdentifier(key)
                                         );
 
                                         if(key.includes('-')) {
-                                            access = ts.factory.createElementAccessChain(
+                                            access = ts.factory.createElementAccessExpression(
                                                 paramsAccess,
-                                                ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
                                                 ts.factory.createStringLiteral(key)
                                             );
                                         }
-                                    }
 
-                                    return ts.factory.createPropertyAssignment(
-                                        key.includes('-') ? ts.factory.createStringLiteral(key) : ts.factory.createIdentifier(key),
-                                        access
-                                    )
-                                }),
-                                true
+                                        if(!options.schemas[schemaKey]?.required?.includes(key)) {
+                                            access = ts.factory.createPropertyAccessChain(
+                                                paramsAccess,
+                                                ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
+                                                ts.factory.createIdentifier(key)
+                                            );
+
+                                            if(key.includes('-')) {
+                                                access = ts.factory.createElementAccessChain(
+                                                    paramsAccess,
+                                                    ts.factory.createToken(ts.SyntaxKind.QuestionDotToken),
+                                                    ts.factory.createStringLiteral(key)
+                                                );
+                                            }
+                                        }
+
+                                        return ts.factory.createPropertyAssignment(
+                                            key.includes('-') ? ts.factory.createStringLiteral(key) : ts.factory.createIdentifier(key),
+                                            access
+                                        )
+                                    }),
+                                    true
+                                )
                             )
-                        )
-                    );
+                        );
+                    }
                 }
+            } else if(options.schemas[schemaKey]?.type === 'array') {
+                returnObject.push(
+                    ts.factory.createPropertyAssignment(
+                        ts.factory.createIdentifier(MAP[schemaKey]),
+                        ts.factory.createPropertyAccessExpression(
+                            ts.factory.createIdentifier('params'),
+                            ts.factory.createIdentifier(schemaKey)
+                        )
+                    )
+                );
             }
         }
     }

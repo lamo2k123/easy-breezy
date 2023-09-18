@@ -135,6 +135,10 @@ export class Swagger {
                 }
 
                 if(parameter.schema && parameter.in === 'body') {
+                    if(parameter.required) {
+                        parameter.schema.required = true;
+                    }
+
                     accumulator[key] = parameter.schema;
                 } else if(parameter.schema) {
                     // @ts-ignore

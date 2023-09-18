@@ -497,8 +497,10 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
                             let hasFormData = false;
 
                             if(isNeedSave) {
-                                const fileContent = fs.readFile(pathEndpoint);
-                                hasFormData = fileContent.includes('interface IParametersBody extends FormData');
+                                if(fs.exists(pathEndpoint)) {
+                                    const fileContent = fs.readFile(pathEndpoint);
+                                    hasFormData = fileContent.includes('interface IParametersBody extends FormData');
+                                }
                             } else {
                                 hasFormData = this.swagger.hasFormDataMethod(this.path(this.answers.baseUrl, path), method as OpenAPIV3.HttpMethods);
                             }
