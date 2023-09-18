@@ -1,7 +1,6 @@
 import { dirname, join, relative, basename } from 'path';
 import { fileURLToPath } from 'url';
 
-import ts from 'typescript';
 import _get from 'lodash.get';
 import _setWith from 'lodash.setwith';
 import enquirer from 'enquirer';
@@ -19,7 +18,6 @@ import { createTypes } from './ast/create-types/index.js';
 
 import ru from './locales/ru.json' assert { type: "json" };
 import en from './locales/en.json' assert { type: "json" };
-import * as console from 'console';
 
 type TMethodV2 = 'get' | 'put' | 'post' | 'delete' | 'options' | 'head' | 'patch';
 type TMethod = TMethodV2 | 'trace';
