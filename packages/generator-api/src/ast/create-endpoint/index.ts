@@ -55,7 +55,7 @@ export const createEndpoint = (options: IOptions) => {
             undefined
         );
 
-        if(!options.schemas.body?.required?.length && !options.schemas.query?.required?.length && !options.schemas.path?.required?.length && !options.schemas.header?.required?.length) {
+        if(typeof options.schemas.body?.required !== 'boolean' && !options.schemas.body?.required?.length && !options.schemas.query?.required?.length && !options.schemas.path?.required?.length && !options.schemas.header?.required?.length) {
             parameters = ts.factory.createUnionTypeNode([
                 parameters,
                 ts.factory.createKeywordTypeNode(ts.SyntaxKind.VoidKeyword)
