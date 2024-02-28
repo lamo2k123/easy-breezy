@@ -463,7 +463,7 @@ export default ({ i18n, config, fs, output, colors }: IGeneratorProps) => {
                             }
 
                             const pathEndpoint = this.path(this.answers.dir, this.answers.name, path, method, 'index.ts');
-                            const pathRelative = relative(pathAPI, dirname(pathEndpoint));
+                            const pathRelative = this.path(relative(pathAPI, dirname(pathEndpoint)));
 
                             imports.push(pathRelative);
 
