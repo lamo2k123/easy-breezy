@@ -4,8 +4,8 @@ import { statSync } from 'fs';
 import { simpleGit, StatusResult } from 'simple-git';
 import { IPluginProps } from '@easy-breezy/core';
 
-import ru from './locales/ru.json' assert { type: "json" };
-import en from './locales/en.json' assert { type: "json" };
+import ru from './locales/ru.json' with { type: "json" };
+import en from './locales/en.json' with { type: "json" };
 import enquirer from 'enquirer';
 
 export default async ({ i18n, config, fs, output, colors, args }: IPluginProps) => {

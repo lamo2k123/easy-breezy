@@ -4,8 +4,8 @@ import enquirer from 'enquirer';
 import args from './../args/index.js';
 import config from './../config/index.js';
 
-import ru from './locales/ru.json' assert { type: "json" };
-import en from './locales/en.json' assert { type: "json" };
+import ru from './locales/ru.json' with { type: "json" };
+import en from './locales/en.json' with { type: "json" };
 
 class I18n {
 

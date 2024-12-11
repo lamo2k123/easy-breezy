@@ -12,9 +12,8 @@ import i18n from './../i18n/index.js';
 import fs from './../fs/index.js';
 import { deepSortObject } from './../../helpers/deep-sort-object/index.js';
 
-// @ts-ignore
 const { default: { version } } = await import('./../../../package.json', {
-    assert: {
+    with: {
         type: "json",
     },
 });

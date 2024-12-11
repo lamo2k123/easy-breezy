@@ -1,8 +1,7 @@
 import { Command } from 'commander';
 
-// @ts-ignore
 const { default: { version } } = await import('./../../../package.json', {
-    assert: {
+    with: {
         type: "json",
     },
 });

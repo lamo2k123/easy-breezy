@@ -16,8 +16,8 @@ import { createExtension } from './ast/create-extension/index.js';
 import { createIndex } from './ast/create-index/index.js';
 import { createTypes } from './ast/create-types/index.js';
 
-import ru from './locales/ru.json' assert { type: "json" };
-import en from './locales/en.json' assert { type: "json" };
+import ru from './locales/ru.json' with { type: "json" };
+import en from './locales/en.json' with { type: "json" };
 
 type TMethodV2 = 'get' | 'put' | 'post' | 'delete' | 'options' | 'head' | 'patch';
 type TMethod = TMethodV2 | 'trace';
